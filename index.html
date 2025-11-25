@@ -19,6 +19,7 @@
             --azul-escuro: #004499;
             --verde: #00cc66;
             --verde-escuro: #009944;
+            --laranja: #ff9900;
         }
         
         * {
@@ -205,6 +206,15 @@
         .btn-small {
             padding: 5px 10px;
             font-size: 0.8em;
+        }
+
+        .btn-auto {
+            background: var(--laranja);
+            color: var(--preto);
+        }
+
+        .btn-auto:hover {
+            background: #e68a00;
         }
 
         /* Modal de Login Admin */
@@ -443,6 +453,68 @@
             resize: vertical;
             min-height: 80px;
         }
+
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-section .form-control {
+            flex: 1;
+        }
+
+        .movie-preview {
+            background: var(--preto);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid var(--cinza);
+        }
+
+        .movie-preview-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .movie-preview-poster {
+            width: 150px;
+            height: 225px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .movie-preview-info {
+            flex: 1;
+        }
+
+        .movie-preview-title {
+            font-size: 1.3em;
+            color: var(--branco);
+            margin-bottom: 10px;
+        }
+
+        .movie-preview-meta {
+            color: var(--cinza-claro);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .movie-preview-plot {
+            color: var(--branco);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .auto-detected {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--verde);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
         
         /* Player */
         .player-container {
@@ -497,18 +569,24 @@
             padding-left: 15px;
         }
 
-        .movie-preview {
-            background: var(--preto-cinza);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid var(--cinza);
-        }
-
         /* Loading */
         .loading {
             opacity: 0.7;
             pointer-events: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--branco);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -655,6 +733,20 @@
                     <!-- Formulário para Filmes -->
                     <div id="movieForm" class="admin-card">
                         <h3>🎬 Adicionar Filme</h3>
+                        
+                        <!-- Busca Automática -->
+                        <div class="search-section">
+                            <input type="text" class="form-control" placeholder="Digite o nome do filme..." id="movieSearchInput">
+                            <button class="btn btn-auto" onclick="searchMovie()" id="searchMovieBtn">
+                                🔍 Buscar no IMDb
+                            </button>
+                        </div>
+
+                        <!-- Preview do Filme -->
+                        <div id="moviePreview" class="movie-preview hidden">
+                            <!-- Preview carregado dinamicamente -->
+                        </div>
+
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Título do Filme" id="manualTitle">
                         </div>
@@ -681,6 +773,20 @@
                     <!-- Formulário para Séries -->
                     <div id="seriesForm" class="admin-card hidden">
                         <h3>📺 Adicionar Série</h3>
+                        
+                        <!-- Busca Automática -->
+                        <div class="search-section">
+                            <input type="text" class="form-control" placeholder="Digite o nome da série..." id="seriesSearchInput">
+                            <button class="btn btn-auto" onclick="searchSeries()" id="searchSeriesBtn">
+                                🔍 Buscar no IMDb
+                            </button>
+                        </div>
+
+                        <!-- Preview da Série -->
+                        <div id="seriesPreview" class="movie-preview hidden">
+                            <!-- Preview carregado dinamicamente -->
+                        </div>
+
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Título da Série" id="seriesTitle">
                         </div>
@@ -760,7 +866,7 @@
 
     <script>
         // =============================================
-        // SISTEMA ZERO - COMPLETO E FUNCIONAL
+        // SISTEMA ZERO - COM BUSCA AUTOMÁTICA DO IMDb
         // =============================================
 
         // Estado do Sistema
@@ -769,6 +875,7 @@
         let categories = [];
         let isAdmin = false;
         let currentMovieData = null;
+        let currentSeriesData = null;
         let currentSearchSource = 'manual';
         let currentSeries = null;
         let currentSeason = 1;
@@ -778,6 +885,224 @@
         let ADMIN_PASSWORD = "zero123";
 
         const SHARED_DATA_URL = 'https://raw.githubusercontent.com/[SEU-USUARIO]/[SEU-REPOSITORIO]/main/filmes.json';
+
+        // Mapeamento de gêneros do IMDb para categorias do sistema
+        const genreMapping = {
+            'Action': 'acao',
+            'Adventure': 'aventura',
+            'Comedy': 'comedia',
+            'Drama': 'drama',
+            'Fantasy': 'fantasia',
+            'Sci-Fi': 'ficcao',
+            'Science Fiction': 'ficcao',
+            'Romance': 'romance',
+            'Thriller': 'suspense',
+            'Horror': 'terror',
+            'Mystery': 'suspense',
+            'Crime': 'suspense',
+            'Animation': 'fantasia',
+            'Family': 'aventura',
+            'Documentary': 'documentario',
+            'Biography': 'drama',
+            'History': 'drama',
+            'War': 'acao',
+            'Music': 'drama',
+            'Sport': 'drama'
+        };
+
+        // =============================================
+        // SISTEMA DE BUSCA AUTOMÁTICA DO IMDb
+        // =============================================
+
+        async function searchMovie() {
+            const searchInput = document.getElementById('movieSearchInput').value.trim();
+            const searchBtn = document.getElementById('searchMovieBtn');
+            
+            if (!searchInput) {
+                alert('❌ Digite o nome de um filme!');
+                return;
+            }
+
+            try {
+                searchBtn.innerHTML = '<span class="loading-spinner"></span> Buscando...';
+                searchBtn.classList.add('loading');
+
+                // Usando a API do OMDb (The Open Movie Database)
+                const API_KEY = 'a1b2c3d4'; // Chave gratuita - pode precisar registrar
+                const response = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(searchInput)}&apikey=${API_KEY}`);
+                
+                if (!response.ok) {
+                    throw new Error('Erro na busca');
+                }
+
+                const data = await response.json();
+                
+                if (data.Response === 'False') {
+                    throw new Error('Filme não encontrado');
+                }
+
+                currentMovieData = data;
+                displayMoviePreview(data);
+                
+            } catch (error) {
+                console.error('Erro na busca:', error);
+                alert('❌ Erro ao buscar filme: ' + error.message);
+            } finally {
+                searchBtn.innerHTML = '🔍 Buscar no IMDb';
+                searchBtn.classList.remove('loading');
+            }
+        }
+
+        async function searchSeries() {
+            const searchInput = document.getElementById('seriesSearchInput').value.trim();
+            const searchBtn = document.getElementById('searchSeriesBtn');
+            
+            if (!searchInput) {
+                alert('❌ Digite o nome de uma série!');
+                return;
+            }
+
+            try {
+                searchBtn.innerHTML = '<span class="loading-spinner"></span> Buscando...';
+                searchBtn.classList.add('loading');
+
+                // Usando a API do OMDb
+                const API_KEY = 'a1b2c3d4';
+                const response = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(searchInput)}&type=series&apikey=${API_KEY}`);
+                
+                if (!response.ok) {
+                    throw new Error('Erro na busca');
+                }
+
+                const data = await response.json();
+                
+                if (data.Response === 'False') {
+                    throw new Error('Série não encontrada');
+                }
+
+                currentSeriesData = data;
+                displaySeriesPreview(data);
+                
+            } catch (error) {
+                console.error('Erro na busca:', error);
+                alert('❌ Erro ao buscar série: ' + error.message);
+            } finally {
+                searchBtn.innerHTML = '🔍 Buscar no IMDb';
+                searchBtn.classList.remove('loading');
+            }
+        }
+
+        function displayMoviePreview(movieData) {
+            const preview = document.getElementById('moviePreview');
+            const detectedCategory = detectCategory(movieData.Genre);
+            
+            preview.innerHTML = `
+                <div class="auto-detected">
+                    🎯 <strong>Informações detectadas automaticamente:</strong>
+                </div>
+                <div class="movie-preview-content">
+                    <img src="${movieData.Poster !== 'N/A' ? movieData.Poster : generatePlaceholderPoster(movieData.Title)}" 
+                         alt="${movieData.Title}" class="movie-preview-poster">
+                    <div class="movie-preview-info">
+                        <div class="movie-preview-title">${movieData.Title} (${movieData.Year})</div>
+                        <div class="movie-preview-meta">
+                            ⭐ ${movieData.imdbRating !== 'N/A' ? movieData.imdbRating : 'N/A'} | 
+                            🕒 ${movieData.Runtime !== 'N/A' ? movieData.Runtime : 'N/A'} | 
+                            📅 ${movieData.Released !== 'N/A' ? movieData.Released : 'N/A'}
+                        </div>
+                        <div class="movie-preview-meta">
+                            🎭 ${movieData.Genre !== 'N/A' ? movieData.Genre : 'N/A'} | 
+                            🎬 ${movieData.Director !== 'N/A' ? movieData.Director : 'N/A'}
+                        </div>
+                        <div class="movie-preview-plot">
+                            ${movieData.Plot !== 'N/A' ? movieData.Plot : 'Sinopse não disponível.'}
+                        </div>
+                        <div style="margin-top: 10px; color: var(--verde);">
+                            ✅ Categoria detectada: <strong>${getCategoryName(detectedCategory)}</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+            preview.classList.remove('hidden');
+
+            // Preenche automaticamente os campos do formulário
+            document.getElementById('manualTitle').value = movieData.Title;
+            document.getElementById('manualYear').value = movieData.Year;
+            document.getElementById('manualDuration').value = movieData.Runtime !== 'N/A' ? movieData.Runtime : '2h';
+            document.getElementById('manualCategory').value = detectedCategory;
+            document.getElementById('manualPoster').value = movieData.Poster !== 'N/A' ? movieData.Poster : '';
+        }
+
+        function displaySeriesPreview(seriesData) {
+            const preview = document.getElementById('seriesPreview');
+            const detectedCategory = detectCategory(seriesData.Genre);
+            
+            preview.innerHTML = `
+                <div class="auto-detected">
+                    🎯 <strong>Informações detectadas automaticamente:</strong>
+                </div>
+                <div class="movie-preview-content">
+                    <img src="${seriesData.Poster !== 'N/A' ? seriesData.Poster : generatePlaceholderPoster(seriesData.Title)}" 
+                         alt="${seriesData.Title}" class="movie-preview-poster">
+                    <div class="movie-preview-info">
+                        <div class="movie-preview-title">${seriesData.Title} (${seriesData.Year})</div>
+                        <div class="movie-preview-meta">
+                            ⭐ ${seriesData.imdbRating !== 'N/A' ? seriesData.imdbRating : 'N/A'} | 
+                            🕒 ${seriesData.totalSeasons ? seriesData.totalSeasons + ' temporadas' : 'N/A'} | 
+                            📅 ${seriesData.Released !== 'N/A' ? seriesData.Released : 'N/A'}
+                        </div>
+                        <div class="movie-preview-meta">
+                            🎭 ${seriesData.Genre !== 'N/A' ? seriesData.Genre : 'N/A'} | 
+                            🎬 ${seriesData.Director !== 'N/A' ? seriesData.Director : 'N/A'}
+                        </div>
+                        <div class="movie-preview-plot">
+                            ${seriesData.Plot !== 'N/A' ? seriesData.Plot : 'Sinopse não disponível.'}
+                        </div>
+                        <div style="margin-top: 10px; color: var(--verde);">
+                            ✅ Categoria detectada: <strong>${getCategoryName(detectedCategory)}</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+            preview.classList.remove('hidden');
+
+            // Preenche automaticamente os campos do formulário
+            document.getElementById('seriesTitle').value = seriesData.Title;
+            document.getElementById('seriesYear').value = seriesData.Year;
+            document.getElementById('seriesCategory').value = detectedCategory;
+            document.getElementById('seriesPoster').value = seriesData.Poster !== 'N/A' ? seriesData.Poster : '';
+            document.getElementById('seriesDescription').value = seriesData.Plot !== 'N/A' ? seriesData.Plot : '';
+        }
+
+        function detectCategory(genres) {
+            if (!genres || genres === 'N/A') return 'drama';
+            
+            const genreList = genres.split(',').map(g => g.trim());
+            
+            for (let genre of genreList) {
+                if (genreMapping[genre]) {
+                    return genreMapping[genre];
+                }
+            }
+            
+            // Fallback baseado no primeiro gênero
+            const firstGenre = genreList[0];
+            if (firstGenre.includes('Action') || firstGenre.includes('Adventure')) return 'acao';
+            if (firstGenre.includes('Comedy')) return 'comedia';
+            if (firstGenre.includes('Drama')) return 'drama';
+            if (firstGenre.includes('Fantasy')) return 'fantasia';
+            if (firstGenre.includes('Sci-Fi')) return 'ficcao';
+            if (firstGenre.includes('Romance')) return 'romance';
+            if (firstGenre.includes('Thriller') || firstGenre.includes('Mystery')) return 'suspense';
+            if (firstGenre.includes('Horror')) return 'terror';
+            
+            return 'drama'; // Fallback padrão
+        }
+
+        function getCategoryName(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            return category ? category.name : 'Desconhecida';
+        }
 
         // =============================================
         // CONTROLE DA BARRA SUPERIOR
@@ -914,6 +1239,12 @@
             document.getElementById('seriesForm').classList.add('hidden');
             document.getElementById('episodeForm').classList.add('hidden');
             
+            // Limpa os previews
+            document.getElementById('moviePreview').classList.add('hidden');
+            document.getElementById('seriesPreview').classList.add('hidden');
+            currentMovieData = null;
+            currentSeriesData = null;
+            
             if (contentType === 'filme') {
                 document.getElementById('movieForm').classList.remove('hidden');
             } else if (contentType === 'serie') {
@@ -957,6 +1288,9 @@
             document.getElementById('seriesCategory').value = '';
             document.getElementById('seriesPoster').value = '';
             document.getElementById('seriesDescription').value = '';
+            document.getElementById('seriesPreview').classList.add('hidden');
+            document.getElementById('seriesSearchInput').value = '';
+            currentSeriesData = null;
             
             showSuccess(`✅ Série "${title}" adicionada com sucesso!`);
             loadSeriesForEpisodes();
@@ -1349,6 +1683,9 @@
             document.getElementById('manualCategory').value = '';
             document.getElementById('manualPoster').value = '';
             document.getElementById('videoEmbedInput').value = '';
+            document.getElementById('moviePreview').classList.add('hidden');
+            document.getElementById('movieSearchInput').value = '';
+            currentMovieData = null;
             
             loadAdminVideos();
             loadCatalogVideos();
@@ -1481,11 +1818,19 @@
         });
 
         function initializeSystem() {
-            console.log('🎬 ZERO - Sistema Completo Inicializado');
+            console.log('🎬 ZERO - Sistema com Busca Automática Inicializado');
         }
 
         function setupEventListeners() {
             document.getElementById('loginForm').addEventListener('submit', handleAdminLogin);
+            
+            // Enter para buscar
+            document.getElementById('movieSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchMovie();
+            });
+            document.getElementById('seriesSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchSeries();
+            });
         }
 
         function checkLoginStatus() {
