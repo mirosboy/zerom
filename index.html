@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO Streaming - Filmes e Séries</title>
+    <meta name="description" content="ZERO Streaming - Sua plataforma de filmes e séries">
+    <meta name="theme-color" content="#ff0000">
+    
+    <style>
+        :root {
+            --vermelho: #ff0000;
+            --vermelho-escuro: #cc0000;
+            --preto: #000000;
+            --preto-cinza: #1a1a1a;
+            --cinza: #333333;
+            --branco: #ffffff;
+            --cinza-claro: #888888;
+            --verde: #00cc66;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--preto);
+            color: var(--branco);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+            padding-top: 70px; /* ✅ ESPAÇO PARA A BARRA FIXA */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* BARRA SUPERIOR FIXA CORRIGIDA */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--preto);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--cinza);
+            height: 70px; /* ✅ ALTURA FIXA */
+            box-sizing: border-box;
+        }
+        
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--vermelho);
+            cursor: pointer;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-link {
+            color: var(--branco);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-link:hover {
+            color: var(--vermelho);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .admin-badge {
+            background: var(--verde);
+            color: var(--preto);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        /* HERO SECTION CORRIGIDA */
+        .hero-section {
+            height: calc(80vh - 70px); /* ✅ SUBTRAI A ALTURA DA BARRA */
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: 0; /* ✅ REMOVIDO MARGIN TOP */
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            margin-top: 0; /* ✅ GARANTE QUE NÃO FICA POR BAIXO */
+        }
+        
+        .hero-title {
+            font-size: 3em;
+            color: var(--vermelho);
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2em;
+            color: var(--branco);
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--vermelho);
+            color: var(--branco);
+        }
+        
+        .btn-primary:hover {
+            background: var(--vermelho-escuro);
+            transform: scale(1.05);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: var(--branco);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* CATÁLOGO */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .video-card {
+            background: var(--preto-cinza);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid var(--cinza);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--vermelho);
+        }
+        
+        .video-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        
+        .video-info {
+            padding: 15px;
+        }
+        
+        .video-title {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: var(--branco);
+        }
+
+        /* PLAYER - SEM ABRIR OUTRA ABA */
+        .player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 70px; /* ✅ ESPAÇO PARA BARRA */
+            box-sizing: border-box;
+        }
+        
+        .video-wrapper {
+            width: 95%;
+            max-width: 1200px;
+            position: relative;
+            height: calc(100vh - 100px); /* ✅ ALTURA AJUSTADA */
+        }
+        
+        .close-player {
+            position: absolute;
+            top: -60px; /* ✅ POSIÇÃO CORRIGIDA */
+            right: 0;
+            background: var(--vermelho);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 3001;
+            font-weight: bold;
+        }
+        
+        .player-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+
+        /* ADMIN - CORRIGIDO PARA NÃO FICAR ATRÁS DA BARRA */
+        .admin-card {
+            background: var(--preto-cinza);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid var(--cinza);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: var(--preto);
+            border: 1px solid var(--cinza);
+            border-radius: 5px;
+            color: var(--branco);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* STATUS */
+        .online-status {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--verde);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+
+        /* SEÇÕES - CORRIGIDAS */
+        .section-title {
+            font-size: 1.8em;
+            margin: 0 0 20px 0; /* ✅ MARGIN TOP REMOVIDA */
+            color: var(--branco);
+            border-left: 4px solid var(--vermelho);
+            padding-left: 15px;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px; /* ✅ MENOR EM MOBILE */
+            }
+            
+            .top-bar {
+                height: 60px;
+                padding: 10px 15px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block !important;
+            }
+            
+            .hero-title {
+                font-size: 2em;
+            }
+            
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .player-container {
+                padding-top: 60px;
+            }
+        }
+
+        /* MENU MOBILE */
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--branco);
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--preto);
+            z-index: 2000;
+            transition: right 0.3s;
+            padding: 80px 20px 20px;
+            border-left: 2px solid var(--vermelho);
+        }
+        
+        .mobile-nav.open {
+            right: 0;
+        }
+        
+        .mobile-nav-link {
+            display: block;
+            padding: 15px;
+            color: var(--branco);
+            border-bottom: 1px solid var(--cinza);
+            cursor: pointer;
+        }
+
+        /* NOTIFICAÇÕES */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            font-weight: bold;
+            background: var(--verde);
+            color: var(--preto);
+        }
+
+        /* CONTEÚDO PRINCIPAL - CORREÇÃO CRÍTICA */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            min-height: calc(100vh - 70px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra Superior FIXA -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+            <div class="logo" onclick="showScreen('homeScreen')">ZERO</div>
+            <div class="nav-links">
+                <div class="nav-link" onclick="showScreen('homeScreen')">🏠 Início</div>
+                <div class="nav-link" onclick="showScreen('catalogScreen')">🎬 Catálogo</div>
+                <div class="nav-link" onclick="showAdminScreen()">
+                    👑 Admin 
+                    <span id="adminBadge" class="admin-badge hidden">ADMIN</span>
+                </div>
+                <div class="nav-link" onclick="showScreen('shareScreen')">📤 Compartilhar</div>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <div id="onlineStatus" class="online-status">● Online</div>
+        </div>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-link" onclick="showScreen('homeScreen'); toggleMobileMenu()">🏠 Início</div>
+        <div class="mobile-nav-link" onclick="showScreen('catalogScreen'); toggleMobileMenu()">🎬 Catálogo</div>
+        <div class="mobile-nav-link" onclick="showAdminScreen(); toggleMobileMenu()">👑 Admin</div>
+        <div class="mobile-nav-link" onclick="showScreen('shareScreen'); toggleMobileMenu()">📤 Compartilhar</div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <!-- Tela Inicial -->
+        <div id="homeScreen">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">ZERO Streaming</h1>
+                    <p class="hero-subtitle">Sua plataforma pessoal de filmes e séries</p>
+                    <button class="btn btn-primary" onclick="enterAsVisitor()">
+                        ▶️ Começar a Assistir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catálogo de Vídeos -->
+        <div id="catalogScreen" class="hidden">
+            <div class="container">
+                <h2 class="section-title">🎬 Catálogo</h2>
+                <div id="videosContainer" class="videos-grid">
+                    <!-- Vídeos carregados dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Player de Vídeo - MESMA ABA -->
+        <div id="playerScreen" class="hidden">
+            <div class="player-container">
+                <div class="video-wrapper">
+                    <button class="close-player" onclick="closePlayer()">✕ Fechar Player</button>
+                    <div class="player-content">
+                        <div id="videoPlayer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Compartilhamento -->
+        <div id="shareScreen" class="hidden">
+            <div class="container">
+                <h2 class="section-title">📤 Compartilhar Catálogo</h2>
+                <div class="admin-card">
+                    <p>Compartilhe este link com seus amigos:</p>
+                    <div id="shareLink" style="background: var(--preto); padding: 15px; border-radius: 5px; margin: 15px 0; word-break: break-all; font-family: monospace;"></div>
+                    <button class="btn btn-primary" onclick="copyShareLink()">📋 Copiar Link</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área Administrativa -->
+        <div id="adminScreen" class="hidden">
+            <div class="container">
+                <h2 class="section-title">👑 Área Administrativa</h2>
+                
+                <div class="admin-card">
+                    <h3>➕ Adicionar Filme</h3>
+                    
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Título do Filme *" id="manualTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Ano" id="manualYear">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Duração (ex: 2h 15min)" id="manualDuration">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="URL do Poster" id="manualPoster">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Código Embed COMPLETO *" id="videoEmbedInput" required rows="4"></textarea>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,0,0.1); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <strong>💡 Exemplos de embed que funcionam:</strong><br>
+                        • <code>&lt;iframe name="Player" src="//redecanais.pe/player3/server.php?vid=CODIGO" ...&gt;&lt;/iframe&gt;</code><br>
+                        • Cole o código embed COMPLETO
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="addVideoManual()">💾 Salvar Filme</button>
+                </div>
+
+                <div class="admin-card">
+                    <h3>📋 Conteúdo Existente</h3>
+                    <button class="btn btn-secondary" onclick="updateShareData()" style="margin-bottom: 15px;">
+                        🔄 Atualizar Link Compartilhado
+                    </button>
+                    <div id="adminVideosList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Login Admin -->
+        <div id="adminLoginModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; padding-top: 70px;">
+            <div style="background: var(--preto-cinza); padding: 30px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%;">
+                <h2 style="margin-bottom: 20px; color: var(--verde);">👑 Acesso Admin</h2>
+                <input type="text" class="form-control" placeholder="Usuário" id="username">
+                <input type="password" class="form-control" placeholder="Senha" id="password">
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="handleAdminLogin()" style="flex: 1;">🔐 Entrar</button>
+                    <button class="btn btn-secondary" onclick="hideAdminLoginModal()">❌ Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // ZERO STREAMING - SISTEMA COMPLETO
+        // =============================================
+
+        // Estado do sistema - SEM FILMES PRÉ-CARREGADOS
+        let videos = [];
+        let currentVideo = null;
+        let isAdmin = false;
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "zero123";
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Verificar dados compartilhados na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedData = urlParams.get('data');
+            
+            if (sharedData) {
+                loadSharedData(sharedData);
+            } else {
+                loadLocalData();
+            }
+            
+            // Verificar login admin
+            if (localStorage.getItem('zero_isAdmin') === 'true') {
+                isAdmin = true;
+                updateAdminBadge();
+            }
+            
+            showScreen('homeScreen');
+            updateShareLink();
+        }
+
+        // =============================================
+        // SISTEMA DE COMPARTILHAMENTO
+        // =============================================
+
+        function loadSharedData(encodedData) {
+            try {
+                const jsonData = decodeURIComponent(encodedData);
+                const data = JSON.parse(jsonData);
+                videos = data.videos || [];
+                saveLocalData();
+                loadCatalogVideos();
+                showSuccess('✅ Catálogo carregado!');
+            } catch (e) {
+                console.error('Erro ao carregar dados compartilhados:', e);
+                loadLocalData();
+            }
+        }
+
+        function generateShareableData() {
+            const data = {
+                videos: videos,
+                timestamp: new Date().toISOString()
+            };
+            
+            const jsonData = JSON.stringify(data);
+            const encodedData = encodeURIComponent(jsonData);
+            
+            const shareUrl = window.location.origin + window.location.pathname + '?data=' + encodedData;
+            document.getElementById('shareLink').textContent = shareUrl;
+            
+            saveLocalData();
+            
+            return shareUrl;
+        }
+
+        function updateShareData() {
+            generateShareableData();
+            showSuccess('✅ Link atualizado!');
+        }
+
+        // =============================================
+        // ARMAZENAMENTO LOCAL - SEM DADOS INICIAIS
+        // =============================================
+
+        function saveLocalData() {
+            const data = {
+                videos: videos,
+                lastUpdate: new Date().toISOString()
+            };
+            localStorage.setItem('zero_data', JSON.stringify(data));
+        }
+
+        function loadLocalData() {
+            try {
+                const saved = localStorage.getItem('zero_data');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    videos = data.videos || [];
+                }
+            } catch (e) {
+                console.log('Carregando catálogo vazio...');
+            }
+            
+            loadCatalogVideos();
+        }
+
+        // =============================================
+        // FUNÇÕES PRINCIPAIS
+        // =============================================
+
+        function showScreen(screenName) {
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('catalogScreen').classList.add('hidden');
+            document.getElementById('playerScreen').classlection.add('hidden');
+            document.getElementById('shareScreen').classList.add('hidden');
+            document.getElementById('adminScreen').classList.add('hidden');
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            
+            if (screenName && document.getElementById(screenName)) {
+                document.getElementById(screenName).classList.remove('hidden');
+            }
+            
+            if (screenName === 'catalogScreen') {
+                loadCatalogVideos();
+            } else if (screenName === 'adminScreen') {
+                loadAdminVideos();
+            } else if (screenName === 'shareScreen') {
+                updateShareLink();
+            }
+        }
+
+        function enterAsVisitor() {
+            isAdmin = false;
+            showScreen('catalogScreen');
+        }
+
+        function showAdminScreen() {
+            if (isAdmin) {
+                showScreen('adminScreen');
+            } else {
+                showAdminLoginModal();
+            }
+        }
+
+        function showAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.remove('hidden');
+        }
+
+        function hideAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+        }
+
+        function handleAdminLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('zero_isAdmin', 'true');
+                hideAdminLoginModal();
+                showScreen('adminScreen');
+                updateAdminBadge();
+                showSuccess('✅ Login admin realizado!');
+            } else {
+                alert('❌ Usuário ou senha incorretos!');
+            }
+        }
+
+        function logout() {
+            isAdmin = false;
+            localStorage.removeItem('zero_isAdmin');
+            showScreen('homeScreen');
+            updateAdminBadge();
+        }
+
+        function updateAdminBadge() {
+            const badge = document.getElementById('adminBadge');
+            if (isAdmin) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('open');
+        }
+
+        // =============================================
+        // CATÁLOGO E PLAYER - MESMA ABA
+        // =============================================
+
+        function loadCatalogVideos() {
+            const container = document.getElementById('videosContainer');
+            container.innerHTML = '';
+            
+            if (videos.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--cinza-claro)">🎬 Nenhum filme adicionado ainda</div>';
+                return;
+            }
+            
+            videos.forEach(video => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => playVideo(video);
+                
+                card.innerHTML = `
+                    <img src="${video.poster}" alt="${video.title}" onerror="this.src='https://via.placeholder.com/300x450/333333/ffffff?text=Sem+Imagem'">
+                    <div class="video-info">
+                        <div class="video-title">${video.title}</div>
+                        <div style="color: var(--cinza-claro); font-size: 0.8em;">
+                            ${video.year} • ${video.duration}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // PLAYER QUE ACEITA QUALQUER EMBED - MESMA ABA
+        function playVideo(video) {
+            currentVideo = video;
+            
+            // INSERE O EMBED COMPLETO NO PLAYER
+            const playerContainer = document.getElementById('videoPlayer');
+            playerContainer.innerHTML = video.embed; // Aceita QUALQUER embed
+            
+            showScreen('playerScreen');
+        }
+
+        function closePlayer() {
+            // Limpa o player
+            document.getElementById('videoPlayer').innerHTML = '';
+            showScreen('catalogScreen');
+        }
+
+        // =============================================
+        // ADMIN - ACEITA EMBEDS ESPECÍFICOS
+        // =============================================
+
+        function addVideoManual() {
+            const title = document.getElementById('manualTitle').value.trim();
+            const embed = document.getElementById('videoEmbedInput').value.trim();
+            
+            if (!title || !embed) {
+                alert('❌ Título e código embed são obrigatórios!');
+                return;
+            }
+            
+            // VALIDAÇÃO FLEXÍVEL - Aceita diversos formatos de embed
+            if (!isValidEmbed(embed)) {
+                alert('⚠️ Código embed inválido! Use um código iframe completo.');
+                return;
+            }
+            
+            const newVideo = {
+                id: Date.now().toString(),
+                title: title,
+                year: document.getElementById('manualYear').value.trim() || '2024',
+                duration: document.getElementById('manualDuration').value.trim() || '2h',
+                poster: document.getElementById('manualPoster').value.trim() || 'https://via.placeholder.com/300x450/333333/ffffff?text=' + encodeURIComponent(title),
+                type: 'filme',
+                embed: embed // Salva o embed COMPLETO
+            };
+            
+            videos.push(newVideo);
+            saveLocalData();
+            clearMovieForm();
+            loadAdminVideos();
+            loadCatalogVideos();
+            showSuccess('✅ Filme adicionado com sucesso!');
+        }
+
+        // VALIDAÇÃO QUE ACEITA SEUS EMBEDS ESPECÍFICOS
+        function isValidEmbed(embed) {
+            // Aceita iframes com src de diversos servidores
+            const validPatterns = [
+                /<iframe[^>]*src=["'][^"']*%72%65%64%65%63%61%6E%61%69%73[^"']*["'][^>]*>/i, // redecanais
+                /<iframe[^>]*src=["'][^"']*redecanais[^"']*["'][^>]*>/i,
+                /<iframe[^>]*src=["'][^"']*\/\/[^"']*["'][^>]*>/i, // Qualquer iframe com src
+                /<iframe[^>]*src=["'][^"']*["'][^>]*>/i // Qualquer iframe básico
+            ];
+            
+            return validPatterns.some(pattern => pattern.test(embed));
+        }
+
+        function clearMovieForm() {
+            document.getElementById('manualTitle').value = '';
+            document.getElementById('manualYear').value = '';
+            document.getElementById('manualDuration').value = '';
+            document.getElementById('manualPoster').value = '';
+            document.getElementById('videoEmbedInput').value = '';
+        }
+
+        function loadAdminVideos() {
+            const container = document.getElementById('adminVideosList');
+            container.innerHTML = '';
+            
+            if (videos.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--cinza-claro)">📭 Nenhum filme cadastrado</div>';
+                return;
+            }
+            
+            videos.forEach(video => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--cinza); display: flex; justify-content: space-between; align-items: center;';
+                item.innerHTML = `
+                    <div>
+                        <strong>${video.title}</strong> (${video.year})
+                        <div style="font-size: 0.8em; color: var(--cinza-claro); margin-top: 5px;">
+                            ${video.duration}
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="deleteVideo('${video.id}')" style="padding: 5px 10px;">🗑️ Excluir</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function deleteVideo(id) {
+            if (confirm('❌ Tem certeza que deseja excluir este filme?')) {
+                videos = videos.filter(v => v.id !== id);
+                saveLocalData();
+                loadAdminVideos();
+                loadCatalogVideos();
+                showSuccess('🗑️ Filme excluído!');
+            }
+        }
+
+        // =============================================
+        // COMPARTILHAMENTO
+        // =============================================
+
+        function updateShareLink() {
+            const shareUrl = generateShareableData();
+            document.getElementById('shareLink').textContent = shareUrl;
+        }
+
+        function copyShareLink() {
+            const shareUrl = generateShareableData();
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showSuccess('✅ Link copiado! Seus amigos vão ver seus filmes!');
+            });
+        }
+
+        function showSuccess(message) {
+            // Remove notificação anterior
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
