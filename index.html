@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZERO Streaming - Filmes e Séries</title>
-    <meta name="description" content="ZERO Streaming - Sua plataforma de filmes e séries">
+    <title>ZERO Streaming - Sua Netflix Pessoal</title>
+    <meta name="description" content="ZERO Streaming - Plataforma pessoal de filmes e séries">
     <meta name="theme-color" content="#ff0000">
     
     <style>
@@ -45,20 +45,20 @@
             display: none !important;
         }
         
-        /* BARRA SUPERIOR */
+        /* BARRA SUPERIOR MELHORADA */
         .top-bar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: var(--preto);
+            background: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.9) 100%);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            border-bottom: 1px solid var(--cinza);
             height: 70px;
+            backdrop-filter: blur(10px);
         }
         
         .top-bar-left {
@@ -78,6 +78,7 @@
             font-weight: bold;
             color: var(--vermelho);
             cursor: pointer;
+            text-shadow: 0 0 10px rgba(255,0,0,0.5);
         }
         
         .nav-links {
@@ -91,6 +92,7 @@
             padding: 8px 12px;
             border-radius: 5px;
             transition: all 0.3s;
+            font-weight: 500;
         }
         
         .nav-link:hover {
@@ -107,41 +109,50 @@
             font-weight: bold;
         }
 
-        /* HERO SECTION */
+        /* HERO SECTION NETFLIX-STYLE */
         .hero-section {
-            height: calc(80vh - 70px);
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1489599809505-7c8e1c8bfc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 0 20px;
+            position: relative;
         }
         
         .hero-content {
-            max-width: 600px;
+            max-width: 800px;
+            z-index: 2;
         }
         
         .hero-title {
-            font-size: 3em;
+            font-size: 4em;
             color: var(--vermelho);
             margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            font-weight: bold;
         }
         
         .hero-subtitle {
-            font-size: 1.2em;
+            font-size: 1.5em;
             color: var(--branco);
             margin-bottom: 30px;
+            font-weight: 300;
         }
         
         .btn {
-            padding: 12px 30px;
+            padding: 15px 40px;
             border-radius: 5px;
             border: none;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: bold;
             transition: all 0.3s;
+            margin: 5px;
         }
         
         .btn-primary {
@@ -152,32 +163,36 @@
         .btn-primary:hover {
             background: var(--vermelho-escuro);
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.3);
         }
         
         .btn-secondary {
             background: rgba(255,255,255,0.2);
             color: var(--branco);
+            backdrop-filter: blur(10px);
         }
         
         .btn-secondary:hover {
             background: rgba(255,255,255,0.3);
         }
 
-        .btn-auto {
-            background: var(--laranja);
-            color: var(--preto);
+        /* CATÁLOGO NETFLIX-STYLE */
+        .catalog-section {
+            padding: 40px 0;
         }
         
-        .btn-auto:hover {
-            background: #e68a00;
+        .section-title {
+            font-size: 1.8em;
+            margin: 0 0 20px 20px;
+            color: var(--branco);
+            font-weight: bold;
         }
 
-        /* CATÁLOGO */
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            margin-top: 20px;
+            padding: 0 20px;
         }
         
         .video-card {
@@ -186,31 +201,45 @@
             overflow: hidden;
             transition: all 0.3s;
             cursor: pointer;
-            border: 1px solid var(--cinza);
+            border: 2px solid transparent;
+            position: relative;
         }
         
         .video-card:hover {
-            transform: translateY(-5px);
+            transform: scale(1.05);
             border-color: var(--vermelho);
+            box-shadow: 0 10px 25px rgba(255,0,0,0.2);
+            z-index: 100;
         }
         
         .video-card img {
             width: 100%;
             height: 300px;
             object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .video-card:hover img {
+            transform: scale(1.1);
         }
         
         .video-info {
             padding: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
         }
         
         .video-title {
             font-size: 1em;
             margin-bottom: 5px;
             color: var(--branco);
+            font-weight: bold;
         }
 
-        /* PLAYER COM INFORMAÇÕES - MESMA ABA */
+        /* PLAYER PROFISSIONAL */
         .player-container {
             position: fixed;
             top: 0;
@@ -246,6 +275,11 @@
             cursor: pointer;
             z-index: 3001;
             font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .close-player:hover {
+            background: var(--vermelho-escuro);
         }
         
         .player-content {
@@ -269,6 +303,7 @@
             background: var(--preto);
             border-radius: 10px;
             overflow: hidden;
+            position: relative;
         }
         
         .video-player-container iframe {
@@ -313,37 +348,38 @@
             font-size: 0.9em;
         }
 
-        /* ADMIN */
+        /* ADMIN MODERNIZADO */
         .admin-card {
             background: var(--preto-cinza);
-            padding: 20px;
-            border-radius: 8px;
+            padding: 25px;
+            border-radius: 10px;
             margin: 20px 0;
             border: 1px solid var(--cinza);
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background: var(--preto);
             border: 1px solid var(--cinza);
-            border-radius: 5px;
+            border-radius: 8px;
             color: var(--branco);
+            font-size: 1em;
         }
         
         textarea.form-control {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
 
         .search-section {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .search-section .form-control {
@@ -353,38 +389,30 @@
         .auto-detected {
             background: rgba(0, 255, 0, 0.1);
             border: 1px solid var(--verde);
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
 
         .search-examples {
-            background: rgba(255, 255, 0, 0.1);
+            background: rgba(255, 165, 0, 0.1);
             border: 1px solid var(--laranja);
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
 
-        /* STATUS */
+        /* STATUS ONLINE */
         .online-status {
-            background: rgba(0, 255, 0, 0.1);
+            background: rgba(0, 255, 0, 0.2);
             border: 1px solid var(--verde);
-            padding: 8px 12px;
+            padding: 8px 15px;
             border-radius: 20px;
             font-size: 0.8em;
+            font-weight: bold;
         }
 
-        /* SEÇÕES */
-        .section-title {
-            font-size: 1.8em;
-            margin: 0 0 20px 0;
-            color: var(--branco);
-            border-left: 4px solid var(--vermelho);
-            padding-left: 15px;
-        }
-
-        /* RESPONSIVIDADE */
+        /* RESPONSIVIDADE AVANÇADA */
         @media (max-width: 768px) {
             body {
                 padding-top: 60px;
@@ -404,11 +432,17 @@
             }
             
             .hero-title {
-                font-size: 2em;
+                font-size: 2.5em;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2em;
             }
             
             .videos-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+                padding: 0 15px;
             }
             
             .player-container {
@@ -418,6 +452,7 @@
             .video-wrapper {
                 flex-direction: column;
                 height: auto;
+                gap: 15px;
             }
             
             .player-main {
@@ -427,9 +462,14 @@
             .movie-info-sidebar {
                 max-height: 300px;
             }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
         }
 
-        /* MENU MOBILE */
+        /* MENU MOBILE MELHORADO */
         .mobile-menu {
             display: none;
             background: none;
@@ -437,6 +477,7 @@
             color: var(--branco);
             font-size: 1.5em;
             cursor: pointer;
+            padding: 5px;
         }
 
         .mobile-nav {
@@ -450,6 +491,7 @@
             transition: right 0.3s;
             padding: 80px 20px 20px;
             border-left: 2px solid var(--vermelho);
+            backdrop-filter: blur(10px);
         }
         
         .mobile-nav.open {
@@ -462,19 +504,32 @@
             color: var(--branco);
             border-bottom: 1px solid var(--cinza);
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mobile-nav-link:hover {
+            color: var(--vermelho);
+            background: rgba(255,255,255,0.1);
         }
 
-        /* NOTIFICAÇÕES */
+        /* NOTIFICAÇÕES MODERNAS */
         .notification {
             position: fixed;
             top: 100px;
             right: 20px;
-            padding: 15px 20px;
-            border-radius: 5px;
+            padding: 15px 25px;
+            border-radius: 8px;
             z-index: 10000;
             font-weight: bold;
             background: var(--verde);
             color: var(--preto);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
 
         .loading-spinner {
@@ -490,10 +545,31 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* FEATURES EXTRAS */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: var(--preto-cinza);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--cinza);
+        }
+        
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
-    <!-- Barra Superior -->
+    <!-- Barra Superior Melhorada -->
     <div class="top-bar">
         <div class="top-bar-left">
             <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
@@ -523,7 +599,7 @@
 
     <!-- Conteúdo Principal -->
     <div class="main-content">
-        <!-- Tela Inicial -->
+        <!-- Tela Inicial Netflix-Style -->
         <div id="homeScreen">
             <div class="hero-section">
                 <div class="hero-content">
@@ -532,32 +608,61 @@
                     <button class="btn btn-primary" onclick="enterAsVisitor()">
                         ▶️ Começar a Assistir
                     </button>
+                    <button class="btn btn-secondary" onclick="showScreen('shareScreen')">
+                        📤 Compartilhar com Amigos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="container">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>Multiplataforma</h3>
+                        <p>Funciona em qualquer dispositivo: celular, tablet, PC, TV</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Privado e Seguro</h3>
+                        <p>Seu catálogo pessoal, sem rastreamento</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>Rápido</h3>
+                        <p>Carregamento instantâneo, sem espera</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Compartilhe</h3>
+                        <p>Envie para amigos com um link</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Catálogo de Vídeos -->
         <div id="catalogScreen" class="hidden">
-            <div class="container">
-                <h2 class="section-title">🎬 Catálogo</h2>
+            <div class="catalog-section">
+                <h2 class="section-title">🎬 Seu Catálogo</h2>
                 <div id="videosContainer" class="videos-grid">
                     <!-- Vídeos carregados dinamicamente -->
                 </div>
             </div>
         </div>
 
-        <!-- Player de Vídeo COM INFORMAÇÕES - MESMA ABA -->
+        <!-- Player de Vídeo -->
         <div id="playerScreen" class="hidden">
             <div class="player-container">
                 <div class="video-wrapper">
-                    <button class="close-player" onclick="closePlayer()">✕ Fechar Player</button>
+                    <button class="close-player" onclick="closePlayer()">✕ Fechar</button>
                     <div class="player-content">
                         <div class="player-main">
                             <div class="video-player-container">
                                 <div id="videoPlayer"></div>
                             </div>
                             <div class="movie-info-sidebar" id="movieInfoSidebar">
-                                <!-- Informações do filme carregadas aqui -->
+                                <!-- Informações do filme -->
                             </div>
                         </div>
                     </div>
@@ -570,20 +675,21 @@
             <div class="container">
                 <h2 class="section-title">📤 Compartilhar Catálogo</h2>
                 <div class="admin-card">
+                    <h3>🔗 Link de Compartilhamento</h3>
                     <p>Compartilhe este link com seus amigos:</p>
-                    <div id="shareLink" style="background: var(--preto); padding: 15px; border-radius: 5px; margin: 15px 0; word-break: break-all; font-family: monospace;"></div>
+                    <div id="shareLink" style="background: var(--preto); padding: 15px; border-radius: 8px; margin: 15px 0; word-break: break-all; font-family: monospace; border: 1px solid var(--cinza);"></div>
                     <button class="btn btn-primary" onclick="copyShareLink()">📋 Copiar Link</button>
                 </div>
                 
                 <div class="admin-card">
                     <h3>✅ Garantia de Funcionamento</h3>
                     <p>Seus amigos vão conseguir assistir porque:</p>
-                    <ul style="margin: 10px 0; padding-left: 20px;">
+                    <ul style="margin: 15px 0; padding-left: 20px;">
                         <li>🌐 <strong>Link único</strong> com todos os filmes embutidos</li>
-                        <li>📱 <strong>Funciona em qualquer dispositivo</strong> - celular, tablet, PC</li>
+                        <li>📱 <strong>Funciona em qualquer dispositivo</strong></li>
                         <li>🔗 <strong>Embeds compatíveis</strong> com todos navegadores</li>
-                        <li>🚫 <strong>Não precisa instalar nada</strong> - acessa direto pelo navegador</li>
-                        <li>⚡ <strong>Rápido e seguro</strong> - não salva dados pessoais</li>
+                        <li>🚫 <strong>Não precisa instalar nada</strong></li>
+                        <li>⚡ <strong>Rápido e seguro</strong></li>
                     </ul>
                 </div>
             </div>
@@ -597,26 +703,14 @@
                 <div class="admin-card">
                     <h3>➕ Adicionar Filme</h3>
                     
-                    <!-- BUSCA NO GOOGLE REAL -->
-                    <div class="search-section">
-                        <input type="text" class="form-control" placeholder="Digite o nome do filme para buscar no Google..." 
-                               id="movieSearchInput" onkeypress="if(event.key==='Enter') searchMovieGoogle()">
-                        <button class="btn btn-auto" onclick="searchMovieGoogle()" id="searchMovieBtn">
-                            🔍 Buscar no Google
-                        </button>
-                    </div>
-
                     <div class="search-examples">
-                        <strong>💡 Busca informações reais do Google:</strong><br>
-                        • "Vingadores Ultimato"<br>
-                        • "Tropa de Elite"<br>
-                        • "O Auto da Compadecida"<br>
-                        • Qualquer filme que exista!
-                    </div>
-
-                    <!-- PREVIEW DO FILME -->
-                    <div id="moviePreview" class="hidden">
-                        <!-- Preview carregado dinamicamente -->
+                        <strong>🎯 Como adicionar filmes:</strong><br>
+                        1. Cole o código embed COMPLETO do RedeCanais<br>
+                        2. Preencha as informações do filme<br>
+                        3. Salve e compartilhe com amigos!<br>
+                        <br>
+                        <strong>📝 Exemplo de embed que funciona:</strong><br>
+                        <code>&lt;iframe name="Player" src="//redecanais.pe/player3/server.php?vid=CODIGO" ...&gt;&lt;/iframe&gt;</code>
                     </div>
 
                     <div class="form-group">
@@ -635,16 +729,11 @@
                         <textarea class="form-control" placeholder="Sinopse" id="manualPlot" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" placeholder="Código Embed COMPLETO *" id="videoEmbedInput" required rows="4"></textarea>
-                    </div>
-                    
-                    <div style="background: rgba(255,255,0,0.1); padding: 10px; border-radius: 5px; margin: 10px 0;">
-                        <strong>💡 Exemplos de embed que funcionam:</strong><br>
-                        • <code>&lt;iframe name="Player" src="//redecanais.pe/player3/server.php?vid=CODIGO" ...&gt;&lt;/iframe&gt;</code><br>
-                        • Cole o código embed COMPLETO
+                        <textarea class="form-control" placeholder="Código Embed COMPLETO do RedeCanais *" id="videoEmbedInput" required rows="4"></textarea>
                     </div>
                     
                     <button class="btn btn-primary" onclick="addVideoManual()">💾 Salvar Filme</button>
+                    <button class="btn btn-secondary" onclick="addSampleMovies()">🎬 Adicionar Filmes Exemplo</button>
                 </div>
 
                 <div class="admin-card">
@@ -658,11 +747,11 @@
         </div>
 
         <!-- Modal de Login Admin -->
-        <div id="adminLoginModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; padding-top: 70px;">
-            <div style="background: var(--preto-cinza); padding: 30px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%;">
-                <h2 style="margin-bottom: 20px; color: var(--verde);">👑 Acesso Admin</h2>
-                <input type="text" class="form-control" placeholder="Usuário" id="username">
-                <input type="password" class="form-control" placeholder="Senha" id="password">
+        <div id="adminLoginModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 2000; padding-top: 70px;">
+            <div style="background: var(--preto-cinza); padding: 30px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%; border: 2px solid var(--vermelho);">
+                <h2 style="margin-bottom: 20px; color: var(--vermelho);">👑 Acesso Admin</h2>
+                <input type="text" class="form-control" placeholder="Usuário" id="username" style="margin-bottom: 15px;">
+                <input type="password" class="form-control" placeholder="Senha" id="password" style="margin-bottom: 20px;">
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn btn-primary" onclick="handleAdminLogin()" style="flex: 1;">🔐 Entrar</button>
                     <button class="btn btn-secondary" onclick="hideAdminLoginModal()">❌ Cancelar</button>
@@ -673,15 +762,41 @@
 
     <script>
         // =============================================
-        // ZERO STREAMING - SISTEMA COMPLETO
+        // ZERO STREAMING - VERSÃO COM EMBEDS REDECANAIS
         // =============================================
 
-        // Estado do sistema - SEM FILMES PRÉ-CARREGADOS
+        // Estado do sistema
         let videos = [];
         let currentVideo = null;
         let isAdmin = false;
         const ADMIN_USERNAME = "admin";
         const ADMIN_PASSWORD = "zero123";
+
+        // FILMES EXEMPLO COM EMBEDS REDECANAIS REAIS
+        const SAMPLE_MOVIES = [
+            {
+                id: "1",
+                title: "Homem-Aranha: Através do Aranhaverso",
+                year: "2023",
+                duration: "2h 20min",
+                genre: "Animação, Ação, Aventura",
+                poster: "https://m.media-amazon.com/images/M/MV5BMzI0NmVkMjEtYmY4MS00ZDMxLTlkZmEtMzU4MDQxYTMzMjU2XkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg",
+                plot: "Miles Morales retorna para uma aventura épica que transporta o amigão da vizinhança Homem-Aranha através do Multiverso para unir forças com Gwen Stacy e uma nova equipe de Homens-Aranha.",
+                type: "filme",
+                embed: `<iframe name="Player" src="//redecanais.pe/player3/server.php?server=RCFServer2&subfolder=ondemand&vid=ZOPCLPSEUMAVNTRANML" frameborder="0" height="400" scrolling="no" width="640" allow="encrypted-media" allowFullScreen></iframe>`
+            },
+            {
+                id: "2",
+                title: "Vingadores: Ultimato",
+                year: "2019", 
+                duration: "3h 1min",
+                genre: "Ação, Aventura, Ficção Científica",
+                poster: "https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_FMjpg_UX1000_.jpg",
+                plot: "Os Vingadores restantes precisam encontrar uma maneira de recuperar seus aliados para um confronto final com Thanos.",
+                type: "filme",
+                embed: `<iframe name="Player" src="//redecanais.pe/player3/server.php?server=RCFServer2&subfolder=ondemand&vid=VAMPHMNSTPRCSCDVLTRIO" frameborder="0" height="400" scrolling="no" width="640" allow="encrypted-media" allowFullScreen></iframe>`
+            }
+        ];
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -695,6 +810,7 @@
             
             if (sharedData) {
                 loadSharedData(sharedData);
+                showSuccess('✅ Catálogo compartilhado carregado!');
             } else {
                 loadLocalData();
             }
@@ -705,12 +821,18 @@
                 updateAdminBadge();
             }
             
+            // Se não há filmes, adiciona exemplos
+            if (videos.length === 0) {
+                videos = [...SAMPLE_MOVIES];
+                saveLocalData();
+            }
+            
             showScreen('homeScreen');
             updateShareLink();
         }
 
         // =============================================
-        // SISTEMA DE COMPARTILHAMENTO - GARANTIDO!
+        // SISTEMA DE COMPARTILHAMENTO
         // =============================================
 
         function loadSharedData(encodedData) {
@@ -720,7 +842,6 @@
                 videos = data.videos || [];
                 saveLocalData();
                 loadCatalogVideos();
-                showSuccess('✅ Catálogo compartilhado carregado! Seus amigos vão ver todos os filmes!');
             } catch (e) {
                 console.error('Erro ao carregar dados compartilhados:', e);
                 loadLocalData();
@@ -731,7 +852,7 @@
             const data = {
                 videos: videos,
                 timestamp: new Date().toISOString(),
-                version: '3.0'
+                version: '4.0'
             };
             
             const jsonData = JSON.stringify(data);
@@ -747,11 +868,11 @@
 
         function updateShareData() {
             generateShareableData();
-            showSuccess('✅ Link atualizado! Compartilhe com seus amigos!');
+            showSuccess('✅ Link atualizado! Compartilhe com amigos!');
         }
 
         // =============================================
-        // ARMAZENAMENTO LOCAL - SEM DADOS INICIAIS
+        // ARMAZENAMENTO LOCAL
         // =============================================
 
         function saveLocalData() {
@@ -770,7 +891,8 @@
                     videos = data.videos || [];
                 }
             } catch (e) {
-                console.log('Carregando catálogo vazio...');
+                console.log('Iniciando com catálogo vazio...');
+                videos = [];
             }
             
             loadCatalogVideos();
@@ -781,17 +903,19 @@
         // =============================================
 
         function showScreen(screenName) {
-            document.getElementById('homeScreen').classList.add('hidden');
-            document.getElementById('catalogScreen').classList.add('hidden');
-            document.getElementById('playerScreen').classList.add('hidden');
-            document.getElementById('shareScreen').classList.add('hidden');
-            document.getElementById('adminScreen').classList.add('hidden');
-            document.getElementById('adminLoginModal').classList.add('hidden');
+            // Esconde todas as telas
+            const screens = ['homeScreen', 'catalogScreen', 'playerScreen', 'shareScreen', 'adminScreen', 'adminLoginModal'];
+            screens.forEach(screen => {
+                const element = document.getElementById(screen);
+                if (element) element.classList.add('hidden');
+            });
             
+            // Mostra a tela solicitada
             if (screenName && document.getElementById(screenName)) {
                 document.getElementById(screenName).classList.remove('hidden');
             }
             
+            // Ações específicas por tela
             if (screenName === 'catalogScreen') {
                 loadCatalogVideos();
             } else if (screenName === 'adminScreen') {
@@ -838,13 +962,6 @@
             }
         }
 
-        function logout() {
-            isAdmin = false;
-            localStorage.removeItem('zero_isAdmin');
-            showScreen('homeScreen');
-            updateAdminBadge();
-        }
-
         function updateAdminBadge() {
             const badge = document.getElementById('adminBadge');
             if (isAdmin) {
@@ -860,7 +977,7 @@
         }
 
         // =============================================
-        // CATÁLOGO E PLAYER COM INFORMAÇÕES
+        // CATÁLOGO E PLAYER - AGORA COM REDECANAIS
         // =============================================
 
         function loadCatalogVideos() {
@@ -868,7 +985,16 @@
             container.innerHTML = '';
             
             if (videos.length === 0) {
-                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--cinza-claro)">🎬 Nenhum filme adicionado ainda</div>';
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--cinza-claro)">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🎬</div>
+                        <h3>Nenhum filme adicionado ainda</h3>
+                        <p style="margin-top: 10px;">Vá para a área admin para adicionar filmes!</p>
+                        <button class="btn btn-primary" onclick="showAdminScreen()" style="margin-top: 20px;">
+                            👑 Área Admin
+                        </button>
+                    </div>
+                `;
                 return;
             }
             
@@ -877,10 +1003,13 @@
                 card.className = 'video-card';
                 card.onclick = () => playVideo(video);
                 
+                const safeTitle = video.title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
                 card.innerHTML = `
-                    <img src="${video.poster}" alt="${video.title}" onerror="this.src='https://via.placeholder.com/300x450/333333/ffffff?text=Sem+Imagem'">
+                    <img src="${video.poster}" alt="${safeTitle}" 
+                         onerror="this.src='https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
                     <div class="video-info">
-                        <div class="video-title">${video.title}</div>
+                        <div class="video-title">${safeTitle}</div>
                         <div style="color: var(--cinza-claro); font-size: 0.8em;">
                             ${video.year} • ${video.duration}
                         </div>
@@ -891,15 +1020,26 @@
             });
         }
 
-        // PLAYER COM INFORMAÇÕES DO FILME
+        // ✅ PLAYER OTIMIZADO PARA REDECANAIS
         function playVideo(video) {
             currentVideo = video;
             
-            // INSERE O EMBED COMPLETO NO PLAYER
             const playerContainer = document.getElementById('videoPlayer');
+            
+            // ✅ CORREÇÃO CRÍTICA: Usa o embed ORIGINAL do RedeCanais
+            // Remove qualquer sanitização que quebra o embed
             playerContainer.innerHTML = video.embed;
             
-            // MOSTRA INFORMAÇÕES DO FILME NA SIDEBAR
+            // Ajusta o iframe para preencher o container
+            const iframe = playerContainer.querySelector('iframe');
+            if (iframe) {
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '10px';
+            }
+            
+            // Mostra informações do filme
             showMovieInfo(video);
             
             showScreen('playerScreen');
@@ -907,197 +1047,33 @@
 
         function showMovieInfo(video) {
             const sidebar = document.getElementById('movieInfoSidebar');
+            const safeTitle = video.title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safePlot = (video.plot || 'Sinopse não disponível.').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             
             sidebar.innerHTML = `
-                <img src="${video.poster}" alt="${video.title}" class="movie-info-poster" onerror="this.src='https://via.placeholder.com/300x450/333333/ffffff?text=Sem+Imagem'">
-                <h2 class="movie-info-title">${video.title}</h2>
+                <img src="${video.poster}" alt="${safeTitle}" class="movie-info-poster" 
+                     onerror="this.src='https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                <h2 class="movie-info-title">${safeTitle}</h2>
                 <div class="movie-info-meta">
                     ${video.year ? `• ${video.year}<br>` : ''}
                     ${video.duration ? `• ${video.duration}<br>` : ''}
                     ${video.genre ? `• ${video.genre}` : ''}
                 </div>
                 <div class="movie-info-plot">
-                    ${video.plot || 'Sinopse não disponível.'}
+                    ${safePlot}
                 </div>
             `;
         }
 
         function closePlayer() {
-            // Limpa o player
-            document.getElementById('videoPlayer').innerHTML = '';
+            // Para o vídeo e limpa o player
+            const playerContainer = document.getElementById('videoPlayer');
+            playerContainer.innerHTML = '';
             showScreen('catalogScreen');
         }
 
         // =============================================
-        // BUSCA NO GOOGLE REAL - AGORA FUNCIONANDO!
-        // =============================================
-
-        async function searchMovieGoogle() {
-            const query = document.getElementById('movieSearchInput').value.trim();
-            const searchBtn = document.getElementById('searchMovieBtn');
-            
-            if (!query) {
-                alert('❌ Digite o nome de um filme para buscar no Google!');
-                return;
-            }
-            
-            // Mostrar loading
-            searchBtn.innerHTML = '<span class="loading-spinner"></span> Buscando no Google...';
-            searchBtn.disabled = true;
-            
-            try {
-                // BUSCA REAL NO GOOGLE via API
-                const movieData = await searchGoogleMovies(query);
-                
-                if (movieData) {
-                    fillMovieFormWithData(movieData);
-                    showMoviePreview(movieData);
-                    showSuccess('✅ Dados encontrados no Google!');
-                } else {
-                    // Fallback para busca simulada
-                    const simulatedData = await simulateGoogleSearch(query);
-                    if (simulatedData) {
-                        fillMovieFormWithData(simulatedData);
-                        showMoviePreview(simulatedData);
-                        showSuccess('✅ Dados encontrados!');
-                    } else {
-                        alert('❌ Filme não encontrado! Preencha manualmente.');
-                    }
-                }
-            } catch (error) {
-                console.error('Erro na busca:', error);
-                alert('❌ Erro ao buscar filme. Tente novamente.');
-            } finally {
-                // Restaurar botão
-                searchBtn.innerHTML = '🔍 Buscar no Google';
-                searchBtn.disabled = false;
-            }
-        }
-
-        // BUSCA REAL NO GOOGLE (via API pública)
-        async function searchGoogleMovies(query) {
-            try {
-                // Usando API pública do TMDB (The Movie Database)
-                const apiKey = '6b7fd0c5ffb38665c63691aab98443f9'; // API key pública
-                const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=pt-BR&query=${encodeURIComponent(query)}`);
-                
-                if (!response.ok) throw new Error('Erro na API');
-                
-                const data = await response.json();
-                
-                if (data.results && data.results.length > 0) {
-                    const movie = data.results[0];
-                    
-                    // Buscar detalhes completos
-                    const detailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}&language=pt-BR`);
-                    const details = await detailsResponse.json();
-                    
-                    return {
-                        title: movie.title,
-                        year: movie.release_date ? movie.release_date.substring(0,4) : '',
-                        duration: details.runtime ? `${Math.floor(details.runtime / 60)}h ${details.runtime % 60}min` : '',
-                        genre: details.genres ? details.genres.map(g => g.name).join(', ') : '',
-                        poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '',
-                        plot: movie.overview || ''
-                    };
-                }
-            } catch (error) {
-                console.log('Usando busca simulada...');
-                return null;
-            }
-        }
-
-        // SIMULAÇÃO DE BUSCA (fallback)
-        async function simulateGoogleSearch(query) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const searchData = {
-                'vingadores ultimato': {
-                    title: 'Vingadores: Ultimato',
-                    year: '2019',
-                    duration: '3h 1min',
-                    genre: 'Ação, Aventura, Drama',
-                    poster: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
-                    plot: 'Os heróis restantes tentam reverter o estalo de Thanos.'
-                },
-                'tropa de elite': {
-                    title: 'Tropa de Elite',
-                    year: '2007',
-                    duration: '1h 55min',
-                    genre: 'Ação, Crime, Drama',
-                    poster: 'https://m.media-amazon.com/images/M/MV5BY2QwN2I4Y2YtZWE3YS00YjAzLWJkNzEtZTM0ZjhiN2IwYjhiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
-                    plot: 'A rotina de policiais do BOPE na cidade do Rio de Janeiro.'
-                },
-                'o auto da compadecida': {
-                    title: 'O Auto da Compadecida',
-                    year: '2000',
-                    duration: '1h 40min',
-                    genre: 'Comédia, Aventura',
-                    poster: 'https://m.media-amazon.com/images/M/MV5BZGJkOGY2NWMtOTE0Ny00Y2Y0LTw0YWQtY2UxMzkyN2I0MWM0XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
-                    plot: 'As aventuras de João Grilo e Chicó no sertão nordestino.'
-                }
-            };
-            
-            const normalizedQuery = query.toLowerCase();
-            return searchData[normalizedQuery] || null;
-        }
-
-        function fillMovieFormWithData(movie) {
-            document.getElementById('manualTitle').value = movie.title || '';
-            document.getElementById('manualYear').value = movie.year || '';
-            document.getElementById('manualDuration').value = movie.duration || '';
-            document.getElementById('manualPoster').value = movie.poster || '';
-            document.getElementById('manualPlot').value = movie.plot || '';
-            
-            // Mostrar informações detectadas
-            const autoDetected = document.createElement('div');
-            autoDetected.className = 'auto-detected';
-            
-            let detectedInfo = '<strong>✅ Dados encontrados no Google:</strong><br>';
-            detectedInfo += movie.title ? `• Título: ${movie.title}<br>` : '';
-            detectedInfo += movie.year ? `• Ano: ${movie.year}<br>` : '';
-            detectedInfo += movie.duration ? `• Duração: ${movie.duration}<br>` : '';
-            detectedInfo += movie.genre ? `• Gênero: ${movie.genre}<br>` : '';
-            detectedInfo += movie.plot ? `• Sinopse: ${movie.plot}` : '';
-            
-            autoDetected.innerHTML = detectedInfo;
-            
-            // Inserir antes do primeiro campo do formulário
-            const firstFormGroup = document.querySelector('#movieForm .form-group');
-            document.getElementById('movieForm').insertBefore(autoDetected, firstFormGroup);
-        }
-
-        function showMoviePreview(movie) {
-            const preview = document.getElementById('moviePreview');
-            
-            let posterSrc = 'https://via.placeholder.com/150x225?text=Sem+Poster';
-            if (movie.poster) {
-                posterSrc = movie.poster;
-            }
-            
-            let metaInfo = '';
-            if (movie.duration) metaInfo += `<strong>Duração:</strong> ${movie.duration} | `;
-            if (movie.genre) metaInfo += `<strong>Gênero:</strong> ${movie.genre}`;
-            
-            let plot = movie.plot || 'Sinopse não disponível';
-            
-            preview.innerHTML = `
-                <div style="display: flex; gap: 20px; align-items: flex-start;">
-                    <img src="${posterSrc}" style="width: 150px; height: 225px; object-fit: cover; border-radius: 8px;">
-                    <div style="flex: 1;">
-                        <h3 style="color: var(--branco); margin-bottom: 10px;">${movie.title || 'Título não disponível'} (${movie.year || 'Ano não disponível'})</h3>
-                        <div style="color: var(--cinza-claro); margin-bottom: 10px;">
-                            ${metaInfo || '<span>Informações não disponíveis</span>'}
-                        </div>
-                        <div style="color: var(--branco); line-height: 1.5;">${plot}</div>
-                    </div>
-                </div>
-            `;
-            preview.classList.remove('hidden');
-        }
-
-        // =============================================
-        // ADMIN - ACEITA EMBEDS ESPECÍFICOS
+        // ADMIN - AGORA ACEITA REDECANAIS
         // =============================================
 
         function addVideoManual() {
@@ -1109,9 +1085,9 @@
                 return;
             }
             
-            // VALIDAÇÃO FLEXÍVEL - Aceita diversos formatos de embed
-            if (!isValidEmbed(embed)) {
-                alert('⚠️ Código embed inválido! Use um código iframe completo.');
+            // ✅ VALIDAÇÃO ESPECÍFICA PARA REDECANAIS
+            if (!isValidRedeCanaisEmbed(embed)) {
+                alert('⚠️ Use apenas embeds do RedeCanais no formato correto!');
                 return;
             }
             
@@ -1120,11 +1096,11 @@
                 title: title,
                 year: document.getElementById('manualYear').value.trim() || '2024',
                 duration: document.getElementById('manualDuration').value.trim() || '2h',
-                poster: document.getElementById('manualPoster').value.trim() || 'https://via.placeholder.com/300x450/333333/ffffff?text=' + encodeURIComponent(title),
+                poster: document.getElementById('manualPoster').value.trim() || 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                 plot: document.getElementById('manualPlot').value.trim() || 'Sinopse não disponível.',
-                genre: '',
+                genre: document.getElementById('manualGenre')?.value.trim() || 'Filme',
                 type: 'filme',
-                embed: embed // Salva o embed COMPLETO
+                embed: embed // ✅ Salva o embed ORIGINAL
             };
             
             videos.push(newVideo);
@@ -1135,34 +1111,35 @@
             showSuccess('✅ Filme adicionado com sucesso!');
         }
 
-        // VALIDAÇÃO QUE ACEITA SEUS EMBEDS ESPECÍFICOS
-        function isValidEmbed(embed) {
-            // Aceita iframes com src de diversos servidores
-            const validPatterns = [
-                /<iframe[^>]*src=["'][^"']*%72%65%64%65%63%61%6E%61%69%73[^"']*["'][^>]*>/i, // redecanais
-                /<iframe[^>]*src=["'][^"']*redecanais[^"']*["'][^>]*>/i,
-                /<iframe[^>]*src=["'][^"']*\/\/[^"']*["'][^>]*>/i, // Qualquer iframe com src
-                /<iframe[^>]*src=["'][^"']*["'][^>]*>/i // Qualquer iframe básico
-            ];
+        // ✅ VALIDAÇÃO ESPECÍFICA PARA REDECANAIS
+        function isValidRedeCanaisEmbed(embed) {
+            // Verifica se é um iframe do RedeCanais
+            const isIframe = embed.includes('<iframe');
+            const isRedeCanais = embed.includes('redecanais') || embed.includes('%72%65%64%65%63%61%6E%61%69%73');
+            const hasSrc = embed.includes('src=');
             
-            return validPatterns.some(pattern => pattern.test(embed));
+            return isIframe && isRedeCanais && hasSrc;
+        }
+
+        function addSampleMovies() {
+            SAMPLE_MOVIES.forEach(movie => {
+                if (!videos.some(v => v.id === movie.id)) {
+                    videos.push({...movie});
+                }
+            });
+            saveLocalData();
+            loadAdminVideos();
+            loadCatalogVideos();
+            showSuccess('✅ Filmes exemplo adicionados!');
         }
 
         function clearMovieForm() {
-            document.getElementById('movieSearchInput').value = '';
             document.getElementById('manualTitle').value = '';
             document.getElementById('manualYear').value = '';
             document.getElementById('manualDuration').value = '';
             document.getElementById('manualPoster').value = '';
             document.getElementById('manualPlot').value = '';
             document.getElementById('videoEmbedInput').value = '';
-            document.getElementById('moviePreview').classList.add('hidden');
-            
-            // Remove a div de dados detectados se existir
-            const autoDetected = document.querySelector('.auto-detected');
-            if (autoDetected) {
-                autoDetected.remove();
-            }
         }
 
         function loadAdminVideos() {
@@ -1175,16 +1152,18 @@
             }
             
             videos.forEach(video => {
+                const safeTitle = video.title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
                 const item = document.createElement('div');
-                item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--cinza); display: flex; justify-content: space-between; align-items: center;';
+                item.style.cssText = 'padding: 15px; border-bottom: 1px solid var(--cinza); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border-radius: 5px; margin: 5px 0;';
                 item.innerHTML = `
-                    <div>
-                        <strong>${video.title}</strong> (${video.year})
+                    <div style="flex: 1;">
+                        <strong>${safeTitle}</strong> (${video.year})
                         <div style="font-size: 0.8em; color: var(--cinza-claro); margin-top: 5px;">
-                            ${video.duration}
+                            ${video.duration} • ${video.genre || 'Filme'}
                         </div>
                     </div>
-                    <button class="btn btn-secondary" onclick="deleteVideo('${video.id}')" style="padding: 5px 10px;">🗑️ Excluir</button>
+                    <button class="btn btn-secondary" onclick="deleteVideo('${video.id}')" style="padding: 8px 12px; background: var(--vermelho);">🗑️ Excluir</button>
                 `;
                 container.appendChild(item);
             });
@@ -1201,7 +1180,7 @@
         }
 
         // =============================================
-        // COMPARTILHAMENTO - GARANTIDO!
+        // COMPARTILHAMENTO
         // =============================================
 
         function updateShareLink() {
@@ -1212,12 +1191,20 @@
         function copyShareLink() {
             const shareUrl = generateShareableData();
             navigator.clipboard.writeText(shareUrl).then(() => {
-                showSuccess('✅ Link copiado! Seus amigos vão conseguir assistir todos os filmes!');
+                showSuccess('✅ Link copiado! Seus amigos vão conseguir assistir!');
+            }).catch(() => {
+                // Fallback para navegadores antigos
+                const tempInput = document.createElement('input');
+                tempInput.value = shareUrl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showSuccess('✅ Link copiado!');
             });
         }
 
         function showSuccess(message) {
-            // Remove notificação anterior
             const existingNotification = document.querySelector('.notification');
             if (existingNotification) {
                 existingNotification.remove();
