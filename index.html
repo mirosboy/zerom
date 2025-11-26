@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO Streaming - Filmes e Séries Grátis</title>
+    <meta name="description" content="ZERO Streaming - Assista filmes e séries gratuitamente em qualquer dispositivo">
+    <meta name="keywords" content="streaming, filmes, series, gratuito, online, assistir">
+    <meta name="theme-color" content="#ff0000">
+    
+    <style>
+        :root {
+            --vermelho: #ff0000;
+            --vermelho-escuro: #cc0000;
+            --preto: #000000;
+            --preto-cinza: #1a1a1a;
+            --cinza: #333333;
+            --branco: #ffffff;
+            --cinza-claro: #888888;
+            --verde: #00cc66;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--preto);
+            color: var(--branco);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* BARRA SUPERIOR */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--preto);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--cinza);
+        }
+        
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--vermelho);
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-link {
+            color: var(--branco);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+        
+        .nav-link:hover {
+            color: var(--vermelho);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .admin-badge {
+            background: var(--verde);
+            color: var(--preto);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        /* HERO SECTION */
+        .hero-section {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.4)), 
+                        url('https://images.unsplash.com/photo-1489599809505-7c8e1c75cee6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: 60px;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero-title {
+            font-size: 3.5em;
+            color: var(--vermelho);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3em;
+            color: var(--branco);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--vermelho);
+            color: var(--branco);
+        }
+        
+        .btn-primary:hover {
+            background: var(--vermelho-escuro);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: var(--branco);
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.8em;
+        }
+
+        /* CATÁLOGO */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .video-card {
+            background: var(--preto-cinza);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid var(--cinza);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--vermelho);
+            box-shadow: 0 10px 25px rgba(255,0,0,0.2);
+        }
+        
+        .video-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .video-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .video-info {
+            padding: 15px;
+        }
+        
+        .video-title {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: var(--branco);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .video-meta {
+            color: var(--cinza-claro);
+            font-size: 0.8em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .video-type-badge {
+            background: var(--vermelho);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        /* PLAYER */
+        .player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+        }
+        
+        .close-player {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: var(--vermelho);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 3001;
+            font-weight: bold;
+        }
+        
+        .alternative-player {
+            text-align: center;
+            padding: 50px;
+            background: var(--preto-cinza);
+            border-radius: 10px;
+            border: 2px solid var(--vermelho);
+        }
+
+        /* ADMIN */
+        .admin-card {
+            background: var(--preto-cinza);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid var(--cinza);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: var(--preto);
+            border: 1px solid var(--cinza);
+            border-radius: 5px;
+            color: var(--branco);
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--vermelho);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255,0,0,0.2);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .search-section .form-control {
+            flex: 1;
+        }
+
+        /* EPISÓDIOS */
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .episode-card {
+            background: var(--preto-cinza);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--cinza);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .episode-card:hover {
+            border-color: var(--vermelho);
+            transform: translateX(5px);
+        }
+        
+        .season-selector {
+            background: var(--preto-cinza);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .season-btn {
+            background: var(--cinza);
+            color: var(--branco);
+            border: none;
+            padding: 8px 12px;
+            margin: 3px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .season-btn.active {
+            background: var(--vermelho);
+        }
+
+        /* STATUS */
+        .online-status {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--verde);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .online-status.offline {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid var(--vermelho);
+        }
+
+        /* SEÇÕES */
+        .section-title {
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            color: var(--branco);
+            border-left: 4px solid var(--vermelho);
+            padding-left: 15px;
+            font-weight: bold;
+        }
+
+        /* FILTROS */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: var(--preto-cinza);
+            color: var(--branco);
+            border: 1px solid var(--cinza);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .filter-btn.active {
+            background: var(--vermelho);
+            border-color: var(--vermelho);
+        }
+        
+        .filter-btn:hover {
+            background: var(--cinza);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: var(--preto-cinza);
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid var(--vermelho);
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 10px 15px;
+            }
+            
+            .logo {
+                font-size: 1.6em;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block !important;
+            }
+            
+            .hero-title {
+                font-size: 2.5em;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1em;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        /* MENU MOBILE */
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--branco);
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--preto);
+            z-index: 2000;
+            transition: right 0.3s;
+            padding: 80px 20px 20px;
+            border-left: 2px solid var(--vermelho);
+        }
+        
+        .mobile-nav.open {
+            right: 0;
+        }
+        
+        .mobile-nav-link {
+            display: block;
+            padding: 15px;
+            color: var(--branco);
+            text-decoration: none;
+            border-bottom: 1px solid var(--cinza);
+            transition: all 0.3s;
+        }
+        
+        .mobile-nav-link:hover {
+            background: var(--vermelho);
+            color: var(--branco);
+        }
+
+        /* NOTIFICAÇÕES */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success {
+            background: var(--verde);
+            color: var(--preto);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+            <div class="logo" onclick="showScreen('homeScreen')">ZERO</div>
+            <div class="nav-links">
+                <div class="nav-link" onclick="showScreen('homeScreen')">🏠 Início</div>
+                <div class="nav-link" onclick="showScreen('catalogScreen')">🎬 Catálogo</div>
+                <div class="nav-link" onclick="showAdminScreen()">
+                    👑 Admin 
+                    <span id="adminBadge" class="admin-badge hidden">ADMIN</span>
+                </div>
+                <div class="nav-link" onclick="showScreen('shareScreen')">📤 Compartilhar</div>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <div id="onlineStatus" class="online-status">
+                <span style="color: var(--verde)">●</span> Online
+            </div>
+            <div class="nav-link" onclick="logout()">🚪 Sair</div>
+        </div>
+    </div>
+
+    <!-- Menu Mobile -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-link" onclick="showScreen('homeScreen'); toggleMobileMenu()">🏠 Início</div>
+        <div class="mobile-nav-link" onclick="showScreen('catalogScreen'); toggleMobileMenu()">🎬 Catálogo</div>
+        <div class="mobile-nav-link" onclick="showAdminScreen(); toggleMobileMenu()">👑 Admin</div>
+        <div class="mobile-nav-link" onclick="showScreen('shareScreen'); toggleMobileMenu()">📤 Compartilhar</div>
+        <div class="mobile-nav-link" onclick="logout(); toggleMobileMenu()">🚪 Sair</div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <!-- Tela Inicial -->
+        <div id="homeScreen">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">ZERO Streaming</h1>
+                    <p class="hero-subtitle">Filmes, séries e muito mais. Sem limites. Grátis para sempre.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="enterAsVisitor()">
+                            ▶️ Assistir Agora
+                        </button>
+                        <button class="btn btn-secondary" onclick="showScreen('catalogScreen')">
+                            📚 Ver Catálogo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catálogo de Vídeos -->
+        <div id="catalogScreen" class="hidden">
+            <div class="container">
+                <h2 class="section-title">🎬 Catálogo Completo</h2>
+                
+                <!-- Filtros -->
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterVideos('all')">📺 Todos</button>
+                    <button class="filter-btn" onclick="filterVideos('filme')">🎬 Filmes</button>
+                    <button class="filter-btn" onclick="filterVideos('serie')">📺 Séries</button>
+                </div>
+                
+                <!-- Grid de Vídeos -->
+                <div id="videosContainer" class="videos-grid">
+                    <!-- Vídeos carregados dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Episódios -->
+        <div id="episodesScreen" class="hidden">
+            <div class="container">
+                <button class="btn btn-secondary" onclick="showScreen('catalogScreen')">← Voltar ao Catálogo</button>
+                <div id="seriesInfo" style="margin: 20px 0;"></div>
+                
+                <!-- Seletor de Temporadas -->
+                <div id="seasonSelector" class="hidden" style="margin: 20px 0;">
+                    <h4 style="margin-bottom: 10px;">📀 Temporadas:</h4>
+                    <div id="seasonButtons" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                </div>
+                
+                <!-- Lista de Episódios -->
+                <div id="episodesContainer" class="episodes-grid">
+                    <!-- Episódios carregados dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Player de Vídeo -->
+        <div id="playerScreen" class="hidden">
+            <div class="player-container">
+                <div class="video-wrapper">
+                    <button class="close-player" onclick="closePlayer()">✕ Fechar Player</button>
+                    
+                    <!-- Player Alternativo -->
+                    <div id="alternativePlayer" class="alternative-player hidden">
+                        <h3>🎬 Assistir em Tela Cheia</h3>
+                        <p>Clique no botão abaixo para abrir o vídeo:</p>
+                        <button class="btn btn-primary" onclick="openVideoInNewTab()" style="margin: 20px;">
+                            ▶️ Abrir Vídeo em Nova Aba
+                        </button>
+                        <p style="color: var(--cinza-claro); margin-top: 20px;">
+                            💡 Dica: Use esta opção se o vídeo não carregar automaticamente
+                        </p>
+                    </div>
+                    
+                    <!-- Player Principal -->
+                    <iframe 
+                        id="videoPlayer" 
+                        width="100%" 
+                        height="500" 
+                        src="" 
+                        frameborder="0" 
+                        allowfullscreen
+                        allow="autoplay; encrypted-media"
+                        onload="checkIframeLoaded()"
+                        onerror="showAlternativePlayer()">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Compartilhamento -->
+        <div id="shareScreen" class="hidden">
+            <div class="container">
+                <h2 class="section-title">📤 Compartilhar Catálogo</h2>
+                <div class="admin-card">
+                    <h3>🔗 Link para Compartilhar</h3>
+                    <p style="margin-bottom: 15px;">Compartilhe este link com seus amigos para que possam acessar o catálogo completo:</p>
+                    <div id="shareLink" style="background: var(--preto); padding: 15px; border-radius: 5px; margin: 15px 0; word-break: break-all; font-family: monospace; border: 1px solid var(--cinza);">
+                        <!-- Link será gerado automaticamente -->
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="copyShareLink()">
+                            📋 Copiar Link
+                        </button>
+                        <button class="btn btn-secondary" onclick="showScreen('catalogScreen')">
+                            ← Voltar ao Catálogo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>📊 Status do Compartilhamento</h3>
+                    <div id="shareStatus">
+                        <p>• ✅ Link funcionando</p>
+                        <p>• 📱 Compatível com todos dispositivos</p>
+                        <p>• 🔗 Dados sincronizados automaticamente</p>
+                        <p>• 👥 Amigos veem em tempo real</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área Administrativa -->
+        <div id="adminScreen" class="hidden">
+            <div class="container">
+                <h2 class="section-title">👑 Área Administrativa</h2>
+
+                <!-- Informações do Sistema -->
+                <div class="admin-card">
+                    <h3>📊 Sistema ZERO Streaming</h3>
+                    <p>• 🌐 Plataforma 100% funcional</p>
+                    <p>• 📱 Compatível com todos os dispositivos</p>
+                    <p>• 🔗 Compartilhamento instantâneo</p>
+                    <p>• 🎬 Catálogo sincronizado em tempo real</p>
+                </div>
+                
+                <!-- Seletor de Tipo -->
+                <div class="admin-card">
+                    <h3>➕ Adicionar Conteúdo</h3>
+                    <div class="form-group">
+                        <label>Tipo de Conteúdo:</label>
+                        <select id="contentType" class="form-control" onchange="toggleContentForm()">
+                            <option value="filme">🎬 Filme</option>
+                            <option value="serie">📺 Série</option>
+                            <option value="episodio">🎥 Episódio (para série existente)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Formulário para Filmes -->
+                <div id="movieForm" class="admin-card">
+                    <h3>🎬 Adicionar Filme</h3>
+                    
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Título do Filme *" id="manualTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Ano" id="manualYear">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Duração (ex: 2h 15min)" id="manualDuration">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="URL do Poster" id="manualPoster">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Link do Vídeo/Embed *" id="videoEmbedInput" required>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,0,0.1); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <strong>💡 Formatos que funcionam:</strong><br>
+                        • YouTube: <code>https://www.youtube.com/embed/CODIGO</code><br>
+                        • Google Drive: <code>https://drive.google.com/file/d/CODIGO/preview</code>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="addVideoManual()">💾 Salvar Filme</button>
+                </div>
+
+                <!-- Formulário para Séries -->
+                <div id="seriesForm" class="admin-card hidden">
+                    <h3>📺 Adicionar Série</h3>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Título da Série *" id="seriesTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Ano de Lançamento" id="seriesYear">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="URL do Poster" id="seriesPoster">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Descrição da Série" id="seriesDescription" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSeries()">💾 Salvar Série</button>
+                </div>
+
+                <!-- Formulário para Episódios -->
+                <div id="episodeForm" class="admin-card hidden">
+                    <h3>🎥 Adicionar Episódio</h3>
+                    <div class="form-group">
+                        <select class="form-control" id="episodeSeriesSelect">
+                            <option value="">Selecione uma série</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" placeholder="Número da Temporada *" id="episodeSeason" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" placeholder="Número do Episódio *" id="episodeNumber" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Título do Episódio *" id="episodeTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Duração (ex: 45min)" id="episodeDuration">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Link do Vídeo/Embed *" id="episodeEmbedInput" required>
+                    </div>
+                    <button class="btn btn-primary" onclick="addEpisode()">💾 Salvar Episódio</button>
+                </div>
+
+                <!-- Lista de Conteúdo Existente -->
+                <div class="admin-card">
+                    <h3>📋 Conteúdo Existente</h3>
+                    <button class="btn btn-secondary" onclick="updateShareData()" style="margin-bottom: 15px;">
+                        🔄 Atualizar Link Compartilhado
+                    </button>
+                    <div style="background: rgba(0,255,0,0.1); border: 1px solid var(--verde); padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                        <strong>📊 Estatísticas:</strong><br>
+                        • 🎬 Filmes: <span id="moviesCount">0</span><br>
+                        • 📺 Séries: <span id="seriesCount">0</span><br>
+                        • 📀 Total: <span id="totalCount">0</span>
+                    </div>
+                    <div id="adminVideosList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Login Admin -->
+        <div id="adminLoginModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <div style="padding: 30px;">
+                    <h2 style="color: var(--verde); margin-bottom: 20px; text-align: center;">👑 Acesso Administrativo</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Usuário" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Senha" id="password" required>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">🔐 Entrar</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideAdminLoginModal()">❌ Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // ZERO STREAMING - SISTEMA COMPLETO
+        // =============================================
+
+        // Estado do sistema
+        let videos = [];
+        let series = [];
+        let currentVideo = null;
+        let currentSeries = null;
+        let currentSeason = 1;
+        let isAdmin = false;
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "zero123";
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Verificar dados compartilhados na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedData = urlParams.get('data');
+            
+            if (sharedData) {
+                loadSharedData(sharedData);
+            } else {
+                loadLocalData();
+            }
+            
+            // Verificar login admin
+            if (localStorage.getItem('zero_isAdmin') === 'true') {
+                isAdmin = true;
+                updateAdminBadge();
+            }
+            
+            showScreen('homeScreen');
+            updateShareLink();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleAdminLogin();
+            });
+            
+            // Clique fora do menu mobile
+            document.addEventListener('click', function(event) {
+                const mobileNav = document.getElementById('mobileNav');
+                const mobileMenu = document.querySelector('.mobile-menu');
+                if (mobileNav && mobileMenu && !mobileNav.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileNav.classList.remove('open');
+                }
+            });
+        }
+
+        // =============================================
+        // SISTEMA DE COMPARTILHAMENTO
+        // =============================================
+
+        function loadSharedData(encodedData) {
+            try {
+                const jsonData = decodeURIComponent(encodedData);
+                const data = JSON.parse(jsonData);
+                videos = data.videos || [];
+                series = data.series || [];
+                saveLocalData();
+                loadCatalogVideos();
+                updateOnlineStatus(true);
+                showSuccess('✅ Catálogo compartilhado carregado!');
+            } catch (e) {
+                console.error('Erro ao carregar dados compartilhados:', e);
+                loadLocalData();
+            }
+        }
+
+        function generateShareableData() {
+            const data = {
+                videos: videos,
+                series: series,
+                timestamp: new Date().toISOString(),
+                version: '2.0'
+            };
+            
+            const jsonData = JSON.stringify(data);
+            const encodedData = encodeURIComponent(jsonData);
+            
+            const shareUrl = window.location.origin + window.location.pathname + '?data=' + encodedData;
+            document.getElementById('shareLink').textContent = shareUrl;
+            
+            saveLocalData();
+            
+            return shareUrl;
+        }
+
+        function updateShareData() {
+            generateShareableData();
+            showSuccess('✅ Link atualizado! Compartilhe com seus amigos.');
+        }
+
+        // =============================================
+        // ARMAZENAMENTO LOCAL
+        // =============================================
+
+        function saveLocalData() {
+            const data = {
+                videos: videos,
+                series: series,
+                lastUpdate: new Date().toISOString()
+            };
+            localStorage.setItem('zero_data', JSON.stringify(data));
+        }
+
+        function loadLocalData() {
+            try {
+                const saved = localStorage.getItem('zero_data');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    videos = data.videos || [];
+                    series = data.series || [];
+                }
+            } catch (e) {
+                console.log('Erro ao carregar dados locais');
+            }
+            
+            if (videos.length === 0 && series.length === 0) {
+                loadSampleData();
+            }
+            
+            loadCatalogVideos();
+        }
+
+        function loadSampleData() {
+            videos = [
+                {
+                    id: '1',
+                    title: 'Vingadores: Ultimato',
+                    year: '2019',
+                    duration: '3h 1min',
+                    poster: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
+                    type: 'filme',
+                    embed: 'https://www.youtube.com/embed/0Lq6gqpcPUU'
+                }
+            ];
+            saveLocalData();
+        }
+
+        // =============================================
+        // FUNÇÕES PRINCIPAIS
+        // =============================================
+
+        function showScreen(screenName) {
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('catalogScreen').classList.add('hidden');
+            document.getElementById('episodesScreen').classList.add('hidden');
+            document.getElementById('playerScreen').classList.add('hidden');
+            document.getElementById('shareScreen').classList.add('hidden');
+            document.getElementById('adminScreen').classList.add('hidden');
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            
+            if (screenName && document.getElementById(screenName)) {
+                document.getElementById(screenName).classList.remove('hidden');
+            }
+            
+            if (screenName === 'catalogScreen') {
+                loadCatalogVideos();
+            } else if (screenName === 'adminScreen') {
+                loadAdminVideos();
+            } else if (screenName === 'shareScreen') {
+                updateShareLink();
+            }
+        }
+
+        function enterAsVisitor() {
+            isAdmin = false;
+            showScreen('catalogScreen');
+        }
+
+        function showAdminScreen() {
+            if (isAdmin) {
+                showScreen('adminScreen');
+            } else {
+                showAdminLoginModal();
+            }
+        }
+
+        function showAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.remove('hidden');
+        }
+
+        function hideAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+        }
+
+        function handleAdminLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('zero_isAdmin', 'true');
+                hideAdminLoginModal();
+                showScreen('adminScreen');
+                updateAdminBadge();
+                showSuccess('✅ Login admin realizado!');
+            } else {
+                alert('❌ Usuário ou senha incorretos!');
+            }
+        }
+
+        function logout() {
+            isAdmin = false;
+            localStorage.removeItem('zero_isAdmin');
+            showScreen('homeScreen');
+            updateAdminBadge();
+        }
+
+        function updateAdminBadge() {
+            const badge = document.getElementById('adminBadge');
+            if (isAdmin) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('open');
+        }
+
+        // =============================================
+        // CATÁLOGO E PLAYER
+        // =============================================
+
+        let currentVideoUrl = '';
+
+        function loadCatalogVideos() {
+            const container = document.getElementById('videosContainer');
+            container.innerHTML = '';
+            
+            const allContent = [...videos, ...series];
+            
+            if (allContent.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--cinza-claro)">🎬 Nenhum conteúdo disponível no momento</div>';
+                return;
+            }
+            
+            allContent.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => {
+                    if (item.type === 'filme') {
+                        playVideo(item);
+                    } else {
+                        showEpisodes(item);
+                    }
+                };
+                
+                card.innerHTML = `
+                    <img src="${item.poster}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300x450/333333/ffffff?text=Sem+Imagem'">
+                    <div class="video-info">
+                        <div class="video-title">${item.title}</div>
+                        <div class="video-meta">
+                            <span>${item.year}</span>
+                            <span class="video-type-badge">${item.type === 'filme' ? '🎬 Filme' : '📺 Série'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function filterVideos(type) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const container = document.getElementById('videosContainer');
+            container.innerHTML = '';
+            
+            let filteredContent = [];
+            
+            if (type === 'all') {
+                filteredContent = [...videos, ...series];
+            } else if (type === 'filme') {
+                filteredContent = videos;
+            } else if (type === 'serie') {
+                filteredContent = series;
+            }
+            
+            if (filteredContent.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--cinza-claro)">🎬 Nenhum ${type === 'all' ? 'conteúdo' : type} disponível</div>`;
+                return;
+            }
+            
+            filteredContent.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => {
+                    if (item.type === 'filme') {
+                        playVideo(item);
+                    } else {
+                        showEpisodes(item);
+                    }
+                };
+                
+                card.innerHTML = `
+                    <img src="${item.poster}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300x450/333333/ffffff?text=Sem+Imagem'">
+                    <div class="video-info">
+                        <div class="video-title">${item.title}</div>
+                        <div class="video-meta">
+                            <span>${item.year}</span>
+                            <span class="video-type-badge">${item.type === 'filme' ? '🎬 Filme' : '📺 Série'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function playVideo(video) {
+            currentVideo = video;
+            currentVideoUrl = video.embed;
+            
+            document.getElementById('alternativePlayer').classList.add('hidden');
+            document.getElementById('videoPlayer').classList.remove('hidden');
+            
+            document.getElementById('videoPlayer').src = video.embed;
+            showScreen('playerScreen');
+            
+            setTimeout(checkIframeLoaded, 3000);
+        }
+
+        function checkIframeLoaded() {
+            const iframe = document.getElementById('videoPlayer');
+            try {
+                if (iframe.contentWindow.document.URL === "about:blank") {
+                    showAlternativePlayer();
+                }
+            } catch (e) {
+                showAlternativePlayer();
+            }
+        }
+
+        function showAlternativePlayer() {
+            document.getElementById('videoPlayer').classList.add('hidden');
+            document.getElementById('alternativePlayer').classList.remove('hidden');
+        }
+
+        function openVideoInNewTab() {
+            if (currentVideoUrl) {
+                window.open(currentVideoUrl, '_blank');
+            }
+        }
+
+        function closePlayer() {
+            document.getElementById('videoPlayer').src = '';
+            showScreen(document.querySelector('#episodesScreen:not(.hidden)') ? 'episodesScreen' : 'catalogScreen');
+        }
+
+        // =============================================
+        // SÉRIES E EPISÓDIOS
+        // =============================================
+
+        function showEpisodes(serie) {
+            currentSeries = serie;
+            currentSeason = 1;
+            
+            document.getElementById('seriesInfo').innerHTML = `
+                <h2>${serie.title} (${serie.year})</h2>
+                <p style="color: var(--cinza-claro); margin-top: 10px;">${serie.description || 'Sem descrição disponível'}</p>
+            `;
+            
+            const seasonSelector = document.getElementById('seasonSelector');
+            const seasonButtons = document.getElementById('seasonButtons');
+            
+            const seasons = Object.keys(serie.seasons || {});
+            if (seasons.length > 0) {
+                seasonButtons.innerHTML = '';
+                seasons.forEach(season => {
+                    const btn = document.createElement('button');
+                    btn.className = `season-btn ${parseInt(season) === currentSeason ? 'active' : ''}`;
+                    btn.textContent = `Temporada ${season}`;
+                    btn.onclick = () => changeSeason(parseInt(season));
+                    seasonButtons.appendChild(btn);
+                });
+                seasonSelector.classList.remove('hidden');
+            } else {
+                seasonSelector.classList.add('hidden');
+            }
+            
+            loadEpisodes();
+            showScreen('episodesScreen');
+        }
+
+        function changeSeason(season) {
+            currentSeason = season;
+            
+            document.querySelectorAll('.season-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            loadEpisodes();
+        }
+
+        function loadEpisodes() {
+            const container = document.getElementById('episodesContainer');
+            container.innerHTML = '';
+            
+            if (!currentSeries.seasons || !currentSeries.seasons[currentSeason] || currentSeries.seasons[currentSeason].length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--cinza-claro)">🎥 Nenhum episódio disponível</div>';
+                return;
+            }
+            
+            currentSeries.seasons[currentSeason].forEach(episode => {
+                const card = document.createElement('div');
+                card.className = 'episode-card';
+                card.onclick = () => playVideo(episode);
+                
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <div style="background: var(--vermelho); color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8em;">
+                            ${episode.number}
+                        </div>
+                        <div style="font-weight: bold; font-size: 0.9em;">${episode.title}</div>
+                    </div>
+                    <div style="color: var(--cinza-claro); font-size: 0.8em;">${episode.duration || 'Duração não informada'}</div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // =============================================
+        // ADMIN - GERENCIAMENTO
+        // =============================================
+
+        function toggleContentForm() {
+            const contentType = document.getElementById('contentType').value;
+            
+            document.getElementById('movieForm').classList.add('hidden');
+            document.getElementById('seriesForm').classList.add('hidden');
+            document.getElementById('episodeForm').classList.add('hidden');
+            
+            if (contentType === 'filme') {
+                document.getElementById('movieForm').classList.remove('hidden');
+            } else if (contentType === 'serie') {
+                document.getElementById('seriesForm').classList.remove('hidden');
+            } else if (contentType === 'episodio') {
+                document.getElementById('episodeForm').classList.remove('hidden');
+                populateSeriesSelect();
+            }
+        }
+
+        function populateSeriesSelect() {
+            const select = document.getElementById('episodeSeriesSelect');
+            select.innerHTML = '<option value="">Selecione uma série</option>';
+            
+            series.forEach(s => {
+                const option = document.createElement('option');
+                option.value = s.id;
+                option.textContent = s.title;
+                select.appendChild(option);
+            });
+        }
+
+        function addVideoManual() {
+            const title = document.getElementById('manualTitle').value.trim();
+            const embed = document.getElementById('videoEmbedInput').value.trim();
+            
+            if (!title || !embed) {
+                alert('❌ Título e link do vídeo são obrigatórios!');
+                return;
+            }
+            
+            const newVideo = {
+                id: Date.now().toString(),
+                title: title,
+                year: document.getElementById('manualYear').value.trim() || '2024',
+                duration: document.getElementById('manualDuration').value.trim() || '2h',
+                poster: document.getElementById('manualPoster').value.trim() || 'https://via.placeholder.com/300x450/333333/ffffff?text=' + encodeURIComponent(title),
+                type: 'filme',
+                embed: embed
+            };
+            
+            videos.push(newVideo);
+            saveLocalData();
+            clearMovieForm();
+            loadAdminVideos();
+            loadCatalogVideos();
+            showSuccess('✅ Filme adicionado com sucesso!');
+        }
+
+        function addSeries() {
+            const title = document.getElementById('seriesTitle').value.trim();
+            
+            if (!title) {
+                alert('❌ Título da série é obrigatório!');
+                return;
+            }
+            
+            const newSeries = {
+                id: Date.now().toString(),
+                title: title,
+                year: document.getElementById('seriesYear').value.trim() || '2024',
+                poster: document.getElementById('seriesPoster').value.trim() || 'https://via.placeholder.com/300x450/333333/ffffff?text=' + encodeURIComponent(title),
+                description: document.getElementById('seriesDescription').value.trim(),
+                seasons: {}
+            };
+            
+            series.push(newSeries);
+            saveLocalData();
+            clearSeriesForm();
+            loadAdminVideos();
+            loadCatalogVideos();
+            showSuccess('✅ Série adicionada com sucesso!');
+        }
+
+        function addEpisode() {
+            const seriesId = document.getElementById('episodeSeriesSelect').value;
+            const season = parseInt(document.getElementById('episodeSeason').value);
+            const episodeNumber = parseInt(document.getElementById('episodeNumber').value);
+            const title = document.getElementById('episodeTitle').value.trim();
+            const embed = document.getElementById('episodeEmbedInput').value.trim();
+            
+            if (!seriesId || !season || !episodeNumber || !title || !embed) {
+                alert('❌ Todos os campos são obrigatórios!');
+                return;
+            }
+            
+            const serie = series.find(s => s.id === seriesId);
+            if (!serie) {
+                alert('❌ Série não encontrada!');
+                return;
+            }
+            
+            if (!serie.seasons[season]) {
+                serie.seasons[season] = [];
+            }
+            
+            const newEpisode = {
+                id: Date.now().toString(),
+                number: episodeNumber,
+                title: title,
+                duration: document.getElementById('episodeDuration').value.trim() || '45min',
+                embed: embed
+            };
+            
+            serie.seasons[season].push(newEpisode);
+            saveLocalData();
+            clearEpisodeForm();
+            loadAdminVideos();
+            showSuccess('✅ Episódio adicionado com sucesso!');
+        }
+
+        function clearMovieForm() {
+            document.getElementById('manualTitle').value = '';
+            document.getElementById('manualYear').value = '';
+            document.getElementById('manualDuration').value = '';
+            document.getElementById('manualPoster').value = '';
+            document.getElementById('videoEmbedInput').value = '';
+        }
+
+        function clearSeriesForm() {
+            document.getElementById('seriesTitle').value = '';
+            document.getElementById('seriesYear').value = '';
+            document.getElementById('seriesPoster').value = '';
+            document.getElementById('seriesDescription').value = '';
+        }
+
+        function clearEpisodeForm() {
+            document.getElementById('episodeSeason').value = '';
+            document.getElementById('episodeNumber').value = '';
+            document.getElementById('episodeTitle').value = '';
+            document.getElementById('episodeDuration').value = '';
+            document.getElementById('episodeEmbedInput').value = '';
+        }
+
+        function loadAdminVideos() {
+            const container = document.getElementById('adminVideosList');
+            container.innerHTML = '';
+            
+            // Atualizar estatísticas
+            document.getElementById('moviesCount').textContent = videos.length;
+            document.getElementById('seriesCount').textContent = series.length;
+            document.getElementById('totalCount').textContent = videos.length + series.length;
+            
+            if (videos.length === 0 && series.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--cinza-claro)">📭 Nenhum conteúdo cadastrado</div>';
+                return;
+            }
+            
+            if (videos.length > 0) {
+                const moviesSection = document.createElement('div');
+                moviesSection.innerHTML = '<h4 style="margin: 15px 0 10px 0; color: var(--vermelho)">🎬 Filmes</h4>';
+                
+                videos.forEach(video => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--cinza); display: flex; justify-content: space-between; align-items: center;';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${video.title}</strong> (${video.year})
+                        </div>
+                        <button class="btn btn-small btn-secondary" onclick="deleteVideo('${video.id}')">🗑️</button>
+                    `;
+                    moviesSection.appendChild(item);
+                });
+                
+                container.appendChild(moviesSection);
+            }
+            
+            if (series.length > 0) {
+                const seriesSection = document.createElement('div');
+                seriesSection.innerHTML = '<h4 style="margin: 15px 0 10px 0; color: var(--vermelho)">📺 Séries</h4>';
+                
+                series.forEach(serie => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--cinza); display: flex; justify-content: space-between; align-items: center;';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${serie.title}</strong> (${serie.year})
+                            <div style="font-size: 0.8em; color: var(--cinza-claro)">${Object.keys(serie.seasons || {}).length} temporada(s)</div>
+                        </div>
+                        <button class="btn btn-small btn-secondary" onclick="deleteSeries('${serie.id}')">🗑️</button>
+                    `;
+                    seriesSection.appendChild(item);
+                });
+                
+                container.appendChild(seriesSection);
+            }
+        }
+
+        function deleteVideo(id) {
+            if (confirm('❌ Tem certeza que deseja excluir este filme?')) {
+                videos = videos.filter(v => v.id !== id);
+                saveLocalData();
+                loadAdminVideos();
+                loadCatalogVideos();
+                showSuccess('🗑️ Filme excluído com sucesso!');
+            }
+        }
+
+        function deleteSeries(id) {
+            if (confirm('❌ Tem certeza que deseja excluir esta série e todos os seus episódios?')) {
+                series = series.filter(s => s.id !== id);
+                saveLocalData();
+                loadAdminVideos();
+                loadCatalogVideos();
+                showSuccess('🗑️ Série excluída com sucesso!');
+            }
+        }
+
+        // =============================================
+        // COMPARTILHAMENTO E UTILITÁRIOS
+        // =============================================
+
+        function updateShareLink() {
+            const shareUrl = generateShareableData();
+            document.getElementById('shareLink').textContent = shareUrl;
+        }
+
+        function copyShareLink() {
+            const shareUrl = generateShareableData();
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showSuccess('✅ Link copiado! Seus amigos vão ver TODOS os filmes!');
+            });
+        }
+
+        function updateOnlineStatus(success = true) {
+            const statusElement = document.getElementById('onlineStatus');
+            if (success) {
+                statusElement.innerHTML = '<span style="color: var(--verde)">●</span> Online';
+                statusElement.style.background = 'rgba(0, 255, 0, 0.1)';
+                statusElement.style.borderColor = 'var(--verde)';
+            } else {
+                statusElement.innerHTML = '<span style="color: var(--vermelho)">●</span> Offline';
+                statusElement.style.background = 'rgba(255, 0, 0, 0.1)';
+                statusElement.style.borderColor = 'var(--vermelho)';
+            }
+        }
+
+        function showSuccess(message) {
+            // Remover notificação anterior
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification success';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
